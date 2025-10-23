@@ -12,7 +12,7 @@ import pytest
 from io import StringIO
 
 # Import the functions to be tested from calculator __init__
-from app.calculator import display_help, calculator
+from app.calculator import display_help, calculator, display_history
 
 def test_display_help(capsys):
     """
@@ -40,6 +40,7 @@ Usage:
 
 Special Commands:
     help      : Display this help message.
+    history   : Show calculation history.
     exit      : Exit the calculator.
 
 Examples:
@@ -51,6 +52,44 @@ Examples:
     # Remove leading/trailing whitespace for comparison
     assert captured.out.strip() == expected_output.strip()
 
+def test_display_history_empty(capsys):
+    """
+    Test the display_history function when the history is empty.
+    """
+    # Arrange
+    history = []
+
+    # Act
+    display_history(history)
+
+    # Assert
+    captured = capsys.readouterr()
+    assert captured.out.strip() == "No calculations performed yet."
+
+def test_display_history_with_entries(capsys):
+    """
+    Test the display_history function when there are entries in the history.
+    """
+    # Arrange
+    history = [
+        "AddCalculation: 10.0 Add 5.0 = 15.0",
+        "SubtractCalculation: 20.0 Subtract 3.0 = 17.0",
+        "MultiplyCalculation: 7.0 Multiply 8.0 = 56.0",
+        "DivideCalculation: 20.0 Divide 4.0 = 5.0"
+    ]
+
+    # Act
+    display_history(history)
+
+    #Assert
+    captured = capsys.readouterr()
+    expected_output = """Calculation History:
+1. AddCalculation: 10.0 Add 5.0 = 15.0
+2. SubtractCalculation: 20.0 Subtract 3.0 = 17.0
+3. MultiplyCalculation: 7.0 Multiply 8.0 = 56.0
+4. DivideCalculation: 20.0 Divide 4.0 = 5.0
+"""
+    assert captured.out.strip() == expected_output.strip()
 
 def test_calculator_exit(monkeypatch, capsys):
     """
@@ -184,6 +223,27 @@ def test_calculator_division_by_zero(monkeypatch, capsys):
     # Assert
     captured = capsys.readouterr()
     assert "Cannot divide by zero." in captured.out
+
+
+def test_calculator_history(monkeypatch, capsys):
+    """
+    Test the calculator's ability to display calculation history.
+    """
+    # Arrange
+    user_input = 'add 5 5\nsubtract 10 3\nhistory\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: AddCalculation: 5.0 Add 5.0 = 10.0" in captured.out
+    assert "Result: SubtractCalculation: 10.0 Subtract 3.0 = 7.0" in captured.out
+    assert "Calculation History:" in captured.out
+    assert "1. AddCalculation: 5.0 Add 5.0 = 10.0" in captured.out
+    assert "2. SubtractCalculation: 10.0 Subtract 3.0 = 7.0" in captured.out
 
 
 def test_calculator_invalid_number_input(monkeypatch, capsys):
