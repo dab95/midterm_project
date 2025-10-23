@@ -1,6 +1,7 @@
 import sys
 from typing import List
 from app.calculation import Calculation, CalculationFactory
+import readline # Enables command history and editing in REPL
 
 #REPL Calcualtor help message with program operations and input structure
 def display_help() -> None:
@@ -19,6 +20,7 @@ Usage:
 
 Special Commands:
     help      : Display this help message.
+    history   : Show calculation history.
     exit      : Exit the calculator.
 
 Examples:
@@ -29,6 +31,17 @@ Examples:
     """
     print(help_message)
 
+def display_history(history: List[Calculation]) -> None:
+    """
+    Displays the history of calculations performed during the session.
+    """
+
+    if not history:
+        print("No calculations performed yet.")
+    else:
+        print("Calculation History:")
+        for idx, calculation in enumerate(history, start=1):
+            print(f"{idx}. {calculation}")
 
 #REPL calculator that performs mathematical operations using calculation classes
 def calculator() -> None:
@@ -36,6 +49,9 @@ def calculator() -> None:
     #repl calculator welcome message
     print("Welcome to the Professional Calculator REPL!")
     print("Type 'help' for instructions or 'exit' to quit.\n")
+
+    #list to store calculation history
+    history: List[Calculation] = []
 
     #calculator loop for input until manually exitted
     while True:
@@ -53,6 +69,10 @@ def calculator() -> None:
             #print help message if input is 'help'
             if command == 'help':
                 display_help()
+                continue  #restart loop
+
+            if command == 'history':
+                display_history(history)
                 continue  #restart loop
 
             #exit program if input is 'exit'
@@ -110,6 +130,10 @@ def calculator() -> None:
             result_str: str = f"{calculation}"
             #print operation and result
             print(f"Result: {result_str}\n")
+
+            #append calculation to history
+            history.append(calculation)
+
 
             #restart loop
 
