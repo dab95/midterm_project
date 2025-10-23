@@ -1,75 +1,287 @@
-""" tests/test_calculator.py """
-import sys
+# test_calculator.py
+"""
+This test module contains unit tests for the 'app/calculator.py' module.
+Each test demonstrates good testing practices using the Arrange-Act-Assert (AAA) pattern.
+AAA Pattern:
+    - Arrange: No special setup required for this function.
+    - Act: Call the display_help function.
+    - Assert: Capture the output and verify it matches the expected help message.
+"""
+
+import pytest
 from io import StringIO
-from app.calculator import calculator
 
+# Import the functions to be tested from calculator __init__
+from app.calculator import display_help, calculator
 
-# Helper function to capture print statements
-def run_calculator_with_input(monkeypatch, inputs):
+def test_display_help(capsys):
     """
-    Simulates user input and captures output from the calculator REPL.
-    
-    :param monkeypatch: pytest fixture to simulate user input
-    :param inputs: list of inputs to simulate
-    :return: captured output as a string
+    Test the display_help function to ensure it prints the correct help message.
     """
-    input_iterator = iter(inputs)
-    monkeypatch.setattr('builtins.input', lambda _: next(input_iterator))
+    #Arrange (no input in display_help())
 
-    # Capture the output of the calculator
-    captured_output = StringIO()
-    sys.stdout = captured_output
-    calculator()
-    sys.stdout = sys.__stdout__  # Reset stdout
-    return captured_output.getvalue()
+    # Act
+    display_help()
 
+    # Assert
+    # Capture the printed output
+    captured = capsys.readouterr()
+    expected_output = """
+Calculator REPL Help
+--------------------
+Usage:
+    <operation> <number1> <number2>
+    - Perform a calculation with the specified operation and two numbers.
+    - Supported operations:
+        add       : Adds two numbers.
+        subtract  : Subtracts the second number from the first.
+        multiply  : Multiplies two numbers.
+        divide    : Divides the first number by the second.
 
-# Positive Tests
-def test_addition(monkeypatch):
-    """Test addition operation in REPL."""
-    inputs = ["add 2 3", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Result: 5.0" in output
+Special Commands:
+    help      : Display this help message.
+    exit      : Exit the calculator.
 
-
-def test_subtraction(monkeypatch):
-    """Test subtraction operation in REPL."""
-    inputs = ["subtract 5 2", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Result: 3.0" in output
-
-
-def test_multiplication(monkeypatch):
-    """Test multiplication operation in REPL."""
-    inputs = ["multiply 4 5", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Result: 20.0" in output
-
-
-def test_division(monkeypatch):
-    """Test division operation in REPL."""
-    inputs = ["divide 10 2", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Result: 5.0" in output
+Examples:
+    add 10 5
+    subtract 15.5 3.2
+    multiply 7 8
+    divide 20 4
+"""
+    # Remove leading/trailing whitespace for comparison
+    assert captured.out.strip() == expected_output.strip()
 
 
-# Negative Tests
-def test_invalid_operation(monkeypatch):
-    """Test invalid operation in REPL."""
-    inputs = ["modulus 5 3", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Unknown operation" in output
+def test_calculator_exit(monkeypatch, capsys):
+    """
+    Test the calculator function's ability to handle the 'exit' command.
+    """
+    # Arrange
+    user_input = 'exit\n' #simulate 'exit' command
+    monkeypatch.setattr('sys.stdin', StringIO(user_input)) 
+
+    # Act
+    with pytest.raises(SystemExit) as exc_info:
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Exiting calculator. Goodbye!\n" in captured.out
+    assert exc_info.type == SystemExit
+    assert exc_info.value.code == 0  # Exit code 0 indicates a clean exit
+
+def test_calculator_help_command(monkeypatch, capsys):
+    """
+    Test the calculator function's ability to handle the 'help' command.
+    """
+
+    # Arrange
+    user_input = 'help\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Calculator REPL Help" in captured.out
+    assert "Exiting calculator. Goodbye!" in captured.out
+
+def test_calculator_invalid_input(monkeypatch, capsys):
+    """
+    Test the calculator function's handling of invalid input format.
+    """
+    # Arrange
+    user_input = 'invalid input\nadd 5\nsubtract\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Invalid input. Please follow the format: <operation> <num1> <num2>" in captured.out
+    assert "Type 'help' for more information." in captured.out
+
+def test_calculator_addition(monkeypatch, capsys):
+    """
+    Test the calculator's addition operation.
+    """
+    # Arrange
+    user_input = 'add 10 5\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: AddCalculation: 10.0 Add 5.0 = 15.0" in captured.out
+
+def test_calculator_subtraction(monkeypatch, capsys):
+    """
+    Test the calculator's subtraction operation.
+    """
+    # Arrange
+    user_input = 'subtract 20 5\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: SubtractCalculation: 20.0 Subtract 5.0 = 15.0" in captured.out
+
+def test_calculator_multiplication(monkeypatch, capsys):
+    """
+    Test the calculator's multiplication operation.
+    """
+    # Arrange
+    user_input = 'multiply 7 8\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: MultiplyCalculation: 7.0 Multiply 8.0 = 56.0" in captured.out
+
+def test_calculator_division(monkeypatch, capsys):
+    """
+    Test the calculator's division operation.
+    """
+    # Arrange
+    user_input = 'divide 20 4\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: DivideCalculation: 20.0 Divide 4.0 = 5.0" in captured.out
+
+def test_calculator_division_by_zero(monkeypatch, capsys):
+    """
+    Test the calculator's handling of division by zero.
+    """
+    # Arrange
+    user_input = 'divide 10 0\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Cannot divide by zero." in captured.out
 
 
-def test_invalid_input_format(monkeypatch):
-    """Test invalid input format in REPL."""
-    inputs = ["add two three", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Invalid input. Please follow the format" in output
+def test_calculator_invalid_number_input(monkeypatch, capsys):
+    """
+    Test the calculator's handling of invalid number input.
+    """
+    # Arrange
+    user_input = 'add ten five\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Invalid input. Please ensure numbers are valid." in captured.out or \
+           "could not convert string to float: 'ten'" in captured.out or \
+           "Invalid input. Please follow the format: <operation> <num1> <num2>" in captured.out
 
 
-def test_division_by_zero(monkeypatch):
-    """Test division by zero in REPL."""
-    inputs = ["divide 5 0", "exit"]
-    output = run_calculator_with_input(monkeypatch, inputs)
-    assert "Division by zero is not allowed" in output
+def test_calculator_unsupported_operation(monkeypatch, capsys):
+    """
+    Test the calculator's handling of an unsupported operation.
+    """
+    # Arrange
+    user_input = 'modulus 2 3\nexit\n'  # Changed 'power' to 'modulus'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Unsupported calculation type: 'modulus'." in captured.out
+    assert "Type 'help' to see the list of supported operations." in captured.out
+
+
+def test_calculator_keyboard_interrupt(monkeypatch, capsys):
+    """
+    Test the calculator's handling of KeyboardInterrupt (Ctrl+C).
+    """
+    # Arrange
+    def mock_input(prompt):
+        raise KeyboardInterrupt()
+    monkeypatch.setattr('builtins.input', mock_input)
+
+    # Act
+    with pytest.raises(SystemExit) as exc_info:
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "\nKeyboard interrupt detected. Exiting calculator. Goodbye!" in captured.out
+    assert exc_info.value.code == 0
+
+def test_calculator_eof_error(monkeypatch, capsys):
+    """
+    Test the calculator's handling of EOFError (Ctrl+D).
+    """
+    # Arrange
+    def mock_input(prompt):
+        raise EOFError()
+    monkeypatch.setattr('builtins.input', mock_input)
+
+    # Act
+    with pytest.raises(SystemExit) as exc_info:
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "\nEOF detected. Exiting calculator. Goodbye!" in captured.out
+    assert exc_info.value.code == 0
+
+def test_calculator_unexpected_exception(monkeypatch, capsys):
+    """
+    Test the calculator's handling of unexpected exceptions during calculation execution.
+    """
+    # Arrange
+    class MockCalculation:
+        def execute(self):
+            raise Exception("Mock exception during execution")
+        def __str__(self):
+            return "MockCalculation"
+
+    def mock_create_calculation(operation, a, b):
+        return MockCalculation()
+
+    monkeypatch.setattr('app.calculation.CalculationFactory.create_calculation', mock_create_calculation)
+    user_input = 'add 10 5\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "An error occurred during calculation: Mock exception during execution" in captured.out
+    assert "Please try again." in captured.out
