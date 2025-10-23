@@ -143,3 +143,15 @@ class DivideCalculation(Calculation):
         
         #calls division method from Operations module to perform division
         return Operations.division(self.a, self.b)
+    
+
+@CalculationFactory.register_calculation('power')
+class PowerCalculation(Calculation):
+    """
+    PowerCalculation represents a power operation.
+    calls execute method to perform power from Operations module.
+    """
+
+    def execute(self) -> float:
+        #calls power method from Operations module to perform the power
+        return Operations.power(self.a, self.b)
