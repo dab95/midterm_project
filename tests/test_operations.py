@@ -338,6 +338,100 @@ def test_division_with_zero_numerator():
 
 
 # -----------------------------------------------------------------------------------
+# Test Power Method
+# -----------------------------------------------------------------------------------
+
+def test_power_positive():
+    """
+    Test the power method with two positive numbers.
+    
+    This test verifies that raising a to b power with two positive numbers returns 
+    the correct product.
+    """
+    # Arrange
+    a = 2.0
+    b = 3.0
+    expected_result = 8.0
+
+    # Act
+    result = Operations.power(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
+
+
+def test_power_negative_numbers():
+    """
+    Test the multiplication method with two negative numbers.
+    
+    This test verifies that taking the power two negative numbers returns the correct product.
+    """
+    # Arrange
+    a = -2.0
+    b = -2.0
+    expected_result = 0.25
+
+    # Act
+    result = Operations.power(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
+
+
+def test_power_positive_negative():
+    """
+    Test the multiplication method with one positive and one negative number.
+    
+    This test verifies that multiplying a positive number by a negative number returns the correct product.
+    """
+    # Arrange
+    a = 2.0
+    b = -2.0
+    expected_result = 0.25
+
+    # Act
+    result = Operations.power(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} ** ({b}) to be {expected_result}, got {result}"
+
+def test_power_with_zeroa():
+    """
+    Test the power method with zero as operand a.
+    
+    This test verifies that raising zero to any power returns zero.
+    """
+    # Arrange
+    a = 0.0
+    b = 5.0
+    expected_result = 0.0
+
+    # Act
+    result = Operations.power(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
+
+
+def test_power_with_zerob():
+    """
+    Test the power method with zero as operand b.
+    
+    This test verifies that raising any number to zero power returns one.
+    """
+    # Arrange
+    a = 5.0
+    b = 0.0
+    expected_result = 1.0
+
+    # Act
+    result = Operations.power(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
+
+
+# -----------------------------------------------------------------------------------
 # Test Invalid Input Types (Negative Testing)
 # -----------------------------------------------------------------------------------
 
