@@ -39,6 +39,7 @@ Usage:
         divide    : Divides the first number by the second.
         power     : Raises the first number to the power of the second.
         root      : Calculates the nth root of a number.
+        modulus   : Returns the remainder of division of the first number by the second.
 
 Special Commands:
     help      : Display this help message.
@@ -52,6 +53,7 @@ Examples:
     divide 20 4
     power 4 2
     root 4 2
+    mod 10 3
 """
     # Remove leading/trailing whitespace for comparison
     assert captured.out.strip() == expected_output.strip()
@@ -228,6 +230,69 @@ def test_calculator_division_by_zero(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert "Cannot divide by zero." in captured.out
 
+def test_calculator_power(monkeypatch, capsys):
+    """
+    Test the calculator's power operation.
+    """
+    # Arrange
+    user_input = 'power 2 4\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: PowerCalculation: 2.0 Power 4.0 = 16.0" in captured.out
+
+def test_calculator_zero_power(monkeypatch, capsys):
+    """
+    Test the calculator's power operation.
+    """
+    # Arrange
+    user_input = 'power 2 0\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: PowerCalculation: 2.0 Power 0.0 = 1.0" in captured.out
+
+def test_calculator_modulus(monkeypatch, capsys):
+    """
+    Test the calculator's modulus operation.
+    """
+    # Arrange
+    user_input = 'mod 5 2\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: ModulusCalculation: 5.0 Modulus 2.0 = 1.0" in captured.out
+
+def test_calculator_modulus_zero(monkeypatch, capsys):
+    """
+    Test the calculator's handling of division by zero in modulus operation.
+    """
+    # Arrange
+    user_input = 'mod 5 0\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Cannot divide by zero." in captured.out
 
 def test_calculator_history(monkeypatch, capsys):
     """
