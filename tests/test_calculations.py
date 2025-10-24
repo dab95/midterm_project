@@ -22,6 +22,7 @@ from app.calculation import (
     DivideCalculation,
     PowerCalculation,
     RootCalculation,
+    ModulusCalculation,
     Calculation
 )
 
@@ -229,6 +230,24 @@ def test_divide_calculation_execute_division_by_zero():
     # Verify the exception message is as expected
     assert str(exc_info.value) == "Cannot divide by zero."
 
+def test_mod_calculation_execute_division_by_zero():
+    """
+    Test that DivideCalculation.execute raises ZeroDivisionError when dividing by zero.
+
+    This test verifies that attempting to divide by zero using DivideCalculation
+    correctly raises a ZeroDivisionError with an appropriate error message.
+    """
+    # Arrange
+    a = 5.0
+    b = 0.0
+    mod_calc = ModulusCalculation(a, b)
+
+    # Act & Assert
+    with pytest.raises(ZeroDivisionError) as exc_info:
+        mod_calc.execute()
+
+    # Verify the exception message is as expected
+    assert str(exc_info.value) == "Cannot divide by zero."
 
 # -----------------------------------------------------------------------------------
 # Test CalculationFactory
@@ -351,6 +370,26 @@ def test_factory_creates_root_calculation():
     assert calc.a == a
     assert calc.b == b
 
+def test_factory_creates_mod_calculation():
+    """
+    Test that CalculationFactory creates a ModulusCalculation instance.
+
+    This test verifies that the factory correctly instantiates the ModulusCalculation
+    class when the 'mod' calculation type is requested.
+    """
+    # Arrange
+    a = 5.0
+    b = 2.0
+
+    # Act
+    calc = CalculationFactory.create_calculation('mod', a, b)
+
+    # Assert
+    assert isinstance(calc, ModulusCalculation)
+    assert calc.a == a
+    assert calc.b == b
+
+
 def test_factory_create_unsupported_calculation():
     """
     Test that CalculationFactory raises ValueError when an unsupported calculation type is requested.
@@ -361,7 +400,7 @@ def test_factory_create_unsupported_calculation():
     # Arrange
     a = 10.0
     b = 5.0
-    unsupported_type = 'modulus'  # An unsupported calculation type
+    unsupported_type = 'log'  # An unsupported calculation type
 
     # Act & Assert
     with pytest.raises(ValueError) as exc_info:
@@ -369,7 +408,6 @@ def test_factory_create_unsupported_calculation():
 
     # Verify that the exception message contains the unsupported type
     assert f"Unsupported calculation type: '{unsupported_type}'" in str(exc_info.value)
-
 
 def test_factory_register_calculation_duplicate():
     """
@@ -525,6 +563,27 @@ def test_calculation_str_representation_root(mock_root):
     expected_str = f"{root_calc.__class__.__name__}: {a} Root {b} = 3.0"
     assert calc_str == expected_str
 
+@patch.object(Operations, 'modulus', return_value=1.0)
+def test_calculation_str_representation_modulus(mock_modulus):
+    """
+    Test the __str__ method of ModulusCalculation.
+
+    This test verifies that the string representation of a ModulusCalculation instance
+    is formatted correctly, displaying the class name, operation, operands, and result.
+    """
+    # Arrange
+    a = 5.0
+    b = 2.0
+    mod_calc = ModulusCalculation(a, b)
+
+    # Act
+    calc_str = str(mod_calc)
+
+    # Assert
+    # Expected string should reflect the operation name derived from the class name ('Mod')
+    expected_str = f"{mod_calc.__class__.__name__}: {a} Modulus {b} = 1.0"
+    assert calc_str == expected_str
+
 def test_calculation_repr_representation_subtraction():
     """
     Test the __repr__ method of SubtractCalculation.
@@ -585,8 +644,9 @@ def test_calculation_repr_representation_division():
 @patch.object(Operations, 'division')
 @patch.object(Operations, 'power')
 @patch.object(Operations, 'root')
+@patch.object(Operations, 'modulus')
 def test_calculation_execute_parameterized(
-    mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_result
 ):
     """
@@ -608,6 +668,8 @@ def test_calculation_execute_parameterized(
         mock_power.return_value = expected_result
     elif calc_type == 'root':
         mock_root.return_value = expected_result
+    elif calc_type == 'mod':
+        mock_modulus.return_value = expected_result
 
     # Act: Create calculation instance and execute
     calc = CalculationFactory.create_calculation(calc_type, a, b)
@@ -625,6 +687,8 @@ def test_calculation_execute_parameterized(
     elif calc_type == 'power':
         mock_power.assert_called_once_with(a, b)
     elif calc_type == 'root':
+        mock_root.assert_called_once_with(a, b)
+    elif calc_type == 'mod':
         mock_root.assert_called_once_with(a, b)
 
     assert result == expected_result
@@ -648,8 +712,9 @@ def test_calculation_execute_parameterized(
 @patch.object(Operations, 'division', return_value=2.0)
 @patch.object(Operations, 'power', return_value=27.0)
 @patch.object(Operations, 'root', return_value=3.0)
+@patch.object(Operations, 'modulus', return_value=1.0)
 def test_calculation_str_parameterized(
-    mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_str
 ):
     """

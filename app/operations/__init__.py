@@ -93,3 +93,18 @@ class Operations:
                 
 
         return (a) ** (1/b)  # This returns the root the two numbers and returns the result.
+    
+
+    @staticmethod
+    def modulus(a: float, b: float) -> float:
+        """
+        This static method takes two numbers (a and b) and returns the remainder of this division operation.
+
+        this method also checks if 'b' is zero and returns an exception message if this is the case
+        Example: if we call Operations.modulus(10.0, 3.0), it will return 1.0.
+        But if we call Operations.modulus(10.0, 0.0), it will raise a ValueError and say "Division by zero is not allowed."
+        """
+        if b == 0:
+            # This part checks if 'b' is zero. If it is, we raise an error and stop the method.
+            raise ValueError("Division by zero is not allowed.")  # This sends an error message when someone tries to divide by zero.
+        return a % b  # If 'b' is not zero, we divide the first number (a) by the second number (b) and return the remainder.

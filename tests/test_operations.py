@@ -544,6 +544,117 @@ def test_zeroth_root():
     # Verify that the exception message is as expected
     assert str(exc_info.value) == "'0'th Root is undefined operation."
 
+
+# -----------------------------------------------------------------------------------
+# Test Modulus Method
+# -----------------------------------------------------------------------------------
+
+def test_modulus_positive():
+    """
+    Test the modulus method with two positive numbers.
+    
+    This test verifies that the modulus of two positive numbers returns the correct number.
+    """
+    # Arrange
+    a = 5.0
+    b = 2.0
+    expected_result = 1.0
+
+    # Act
+    result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
+def test_modulus_negative_numbers():
+    """
+    Test the modulus method with two negative numbers.
+    
+    This test verifies that the modulus of two negative numbers returns the correct number.
+    """
+    # Arrange
+    a = -5.0
+    b = -2.0
+    expected_result = -1.0
+
+    # Act
+    result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
+def test_modulus_positive_negative():
+    """
+    Test the modulus method with one positive and one negative number.
+    
+    This test verifies that the modulus of a positive dividend by a negative divisor returns the correct number.
+    """
+    # Arrange
+    a = 5.0
+    b = -2.0
+    expected_result = -1.0
+
+    # Act
+    result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+
+def test_modulus_negative_positive():
+    """
+    Test the modulus method with one positive and one negative number.
+    
+    This test verifies that the modulus of a negative dividend by a positive divisor returns the correct number.
+    """
+    # Arrange
+    a = -5.0
+    b = 2.0
+    expected_result = 1.0
+
+    # Act
+    result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+
+def test_modulus_with_zero_divisor():
+    """
+    Test the modulus method with zero as the divisor.
+    
+    This test verifies that dividing any number by zero raises a ValueError.
+    """
+    # Arrange
+    a = 5.0
+    b = 0.0
+
+    # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.modulus(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "Division by zero is not allowed."
+
+
+def test_division_with_zero_numerator():
+    """
+    Test the modulus method with zero as the dividend.
+    
+    This test verifies that dividing zero by a non-zero number returns zero.
+    """
+    # Arrange
+    a = 0.0
+    b = 5.0
+    expected_result = 0.0
+
+    # Act
+    result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
 # -----------------------------------------------------------------------------------
 # Test Invalid Input Types (Negative Testing)
 # -----------------------------------------------------------------------------------
