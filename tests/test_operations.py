@@ -655,7 +655,7 @@ def test_modulus_with_zero_numerator():
     assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
 
 # -----------------------------------------------------------------------------------
-# Test Division Method
+# Test Integer Division Method
 # -----------------------------------------------------------------------------------
 
 def test_intdivision_positive():
