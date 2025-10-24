@@ -64,3 +64,32 @@ class Operations:
         Example: if we call Operations.power(2.0, 3.0), it will return 8.0.
         """
         return a ** b  # This multiplies the two numbers and returns the result.
+    
+    @staticmethod
+    def root(a: float, b: float) -> float:
+        """
+        This static method takes two numbers (a and b) and returns the 'b' root of 'a'
+        Root means a number multiplied that when by itself 'b' times gives 'a'
+        Example: if we call Operations.root(4.0, 2.0), it will return 2.0.
+        """
+        if b == 0:
+            raise ValueError("'0'th Root is undefined operation.") #0th root returns undefined value
+        
+        if b < 0:
+            raise ValueError("'b'th root must be a positive number.") #nth root value must be positive
+
+        if a < 0: #if a is negative number
+            if float(b).is_integer(): #check if b is a whole number
+                b_int = int(b) #convert b to int if value is a whole number
+                
+                if b_int % 2 == 0: #check if b is even
+                    raise ValueError("Cannot take even root of a negative number.") #cant take even root of a negative number
+                
+                else: #b is odd
+                    return -((-a) ** (1/b_int)) #b int root of int root of negative a number
+            else:
+                raise ValueError("Cannot take fractional root of a negative number.") #cant take root fractional root of a negative number
+
+                
+
+        return (a) ** (1/b)  # This returns the root the two numbers and returns the result.

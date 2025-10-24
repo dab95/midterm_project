@@ -430,6 +430,119 @@ def test_power_with_zerob():
     # Assert
     assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
 
+# -----------------------------------------------------------------------------------
+# Test Root Method
+# -----------------------------------------------------------------------------------
+
+def test_root_positive():
+    """
+    Test the root method with two positive numbers.
+    
+    This test verifies that dividing two positive numbers returns the correct number.
+    """
+    # Arrange
+    a = 4.0
+    b = 2.0
+    expected_result = 2.0
+
+    # Act
+    result = Operations.root(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
+def test_root_negative_numbers(): 
+    """
+    Test the division method with two negative numbers.
+    
+    This test verifies that finding the negative root of a negative number returns
+    the correct exception message.
+    """
+    # Arrange
+    a = -27.0
+    b = -3.0
+
+    # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.root(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "'b'th root must be a positive number."
+
+
+def test_root_negative_positive_odd():
+    """
+    Test the root method with negative a and positive odd 'b'th root.
+    
+    This test verifies that that the positive odd root of a negative 
+    number returns the correct result.
+    """
+    # Arrange
+    a = -27.0
+    b = 3.0
+    expected_result = -3.0
+
+    # Act
+    result = Operations.root(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+
+
+def test_root_negative_positive_even():
+    """
+    Test the root method for an even 'b'th root of a negative a value .
+    
+    This test verifies taking an even root of negative number returns a ValueError.
+    """
+    # Arrange
+    a = -4.0
+    b = 2.0
+
+    # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.root(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "Cannot take even root of a negative number."
+
+
+def test_root_negative_with_decimal():
+    """
+    Test the root method with fractional 'b'th root.
+    
+    This test verifies that taking a fractional root of a negative number returns
+    the correct exception message.
+    """
+    # Arrange
+    a = -100.0
+    b = 5.25
+
+     # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.root(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "Cannot take fractional root of a negative number."
+
+def test_zeroth_root():
+    """
+    Test the root method with zero-th root.
+    
+    This test verifies that taking a taking the zero root of a number returns
+    the correct exception message.
+    """
+    # Arrange
+    a = 4.0
+    b = 0.0
+
+     # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.root(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "'0'th Root is undefined operation."
 
 # -----------------------------------------------------------------------------------
 # Test Invalid Input Types (Negative Testing)
