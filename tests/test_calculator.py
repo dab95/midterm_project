@@ -39,7 +39,8 @@ Usage:
         divide    : Divides the first number by the second.
         power     : Raises the first number to the power of the second.
         root      : Calculates the nth root of a number.
-        modulus   : Returns the remainder of division of the first number by the second.
+        mod       : Returns the remainder of division of the first number by the second.
+        intdivide : Performs integer division of the first number by the second.
 
 Special Commands:
     help      : Display this help message.
@@ -54,6 +55,7 @@ Examples:
     power 4 2
     root 4 2
     mod 10 3
+    intdivide 10 3
 """
     # Remove leading/trailing whitespace for comparison
     assert captured.out.strip() == expected_output.strip()
@@ -284,6 +286,38 @@ def test_calculator_modulus_zero(monkeypatch, capsys):
     """
     # Arrange
     user_input = 'mod 5 0\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Cannot divide by zero." in captured.out
+
+def test_calculator_division(monkeypatch, capsys):
+    """
+    Test the calculator's intdivision operation.
+    """
+    # Arrange
+    user_input = 'intdivide 10 3\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: IntDivideCalculation: 10.0 IntDivide 3.0 = 3.0" in captured.out
+
+def test_calculator_intdivision_by_zero(monkeypatch, capsys):
+    """
+    Test the calculator's handling of intdivision by zero.
+    """
+    # Arrange
+    user_input = 'intdivide 10 0\nexit\n'
     monkeypatch.setattr('sys.stdin', StringIO(user_input))
 
     # Act

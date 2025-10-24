@@ -19,7 +19,8 @@ Usage:
         divide    : Divides the first number by the second.
         power     : Raises the first number to the power of the second.
         root      : Calculates the nth root of a number.
-        modulus   : Returns the remainder of division of the first number by the second.
+        mod       : Returns the remainder of division of the first number by the second.
+        intdivide : Performs integer division of the first number by the second.
 
 Special Commands:
     help      : Display this help message.
@@ -34,6 +35,7 @@ Examples:
     power 4 2
     root 4 2
     mod 10 3
+    intdivide 10 3
     """
     print(help_message)
 
