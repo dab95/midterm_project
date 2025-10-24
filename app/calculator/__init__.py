@@ -18,6 +18,7 @@ Usage:
         multiply  : Multiplies two numbers.
         divide    : Divides the first number by the second.
         power     : Raises the first number to the power of the second.
+        root      : Calculates the nth root of a number.
 
 Special Commands:
     help      : Display this help message.
@@ -30,6 +31,7 @@ Examples:
     multiply 7 8
     divide 20 4
     power 4 2
+    root 4 2
     """
     print(help_message)
 
