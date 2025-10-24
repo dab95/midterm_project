@@ -186,3 +186,22 @@ class ModulusCalculation(Calculation):
         
         #calls division method from Operations module to perform division
         return Operations.modulus(self.a, self.b)
+    
+
+@CalculationFactory.register_calculation('intdivide')
+class IntDivideCalculation(Calculation):
+    """
+    IntDivideCalculation represents a integer division operation.
+    
+    **Special Case - Division by Zero**: Division requires extra error handling to 
+    prevent dividing by zero, which would cause an error in the program. This class 
+    checks if the second operand is zero before performing the operation.
+    """
+
+    def execute(self) -> float:
+        #check if b operand is zero, raise exception if true
+        if self.b == 0:
+            raise ZeroDivisionError("Cannot divide by zero.")
+        
+        #calls division method from Operations module to perform division
+        return Operations.intdivision(self.a, self.b)

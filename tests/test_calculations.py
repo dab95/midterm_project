@@ -23,6 +23,7 @@ from app.calculation import (
     PowerCalculation,
     RootCalculation,
     ModulusCalculation,
+    IntDivideCalculation,
     Calculation
 )
 
@@ -249,6 +250,24 @@ def test_mod_calculation_execute_division_by_zero():
     # Verify the exception message is as expected
     assert str(exc_info.value) == "Cannot divide by zero."
 
+def test_intdivide_calculation_execute_division_by_zero():
+    """
+    Test that IntDivideCalculation.execute raises ZeroDivisionError when dividing by zero.
+
+    This test verifies that attempting to divide by zero using DivideCalculation
+    correctly raises a ZeroDivisionError with an appropriate error message.
+    """
+    # Arrange
+    a = 10.0
+    b = 0.0
+    intdivide_calc = IntDivideCalculation(a, b)
+
+    # Act & Assert
+    with pytest.raises(ZeroDivisionError) as exc_info:
+        intdivide_calc.execute()
+
+    # Verify the exception message is as expected
+    assert str(exc_info.value) == "Cannot divide by zero."
 # -----------------------------------------------------------------------------------
 # Test CalculationFactory
 # -----------------------------------------------------------------------------------
@@ -389,6 +408,24 @@ def test_factory_creates_mod_calculation():
     assert calc.a == a
     assert calc.b == b
 
+def test_factory_creates_intdivide_calculation():
+    """
+    Test that CalculationFactory creates a IntDivideCalculation instance.
+
+    This test verifies that the factory correctly instantiates the IntDivideCalculation
+    class when the 'intdivide' calculation type is requested.
+    """
+    # Arrange
+    a = 10.0
+    b = 3.0
+
+    # Act
+    calc = CalculationFactory.create_calculation('intdivide', a, b)
+
+    # Assert
+    assert isinstance(calc, IntDivideCalculation)
+    assert calc.a == a
+    assert calc.b == b
 
 def test_factory_create_unsupported_calculation():
     """
@@ -584,6 +621,27 @@ def test_calculation_str_representation_modulus(mock_modulus):
     expected_str = f"{mod_calc.__class__.__name__}: {a} Modulus {b} = 1.0"
     assert calc_str == expected_str
 
+@patch.object(Operations, 'intdivision', return_value=3.0)
+def test_calculation_str_representation_intdivision(mock_intdivision):
+    """
+    Test the __str__ method of IntDivideCalculation.
+
+    This test verifies that the string representation of a IntDivideCalculation instance
+    is formatted correctly, displaying the class name, operation, operands, and result.
+    """
+    # Arrange
+    a = 10.0
+    b = 3.0
+    intdivide_calc = IntDivideCalculation(a, b)
+
+    # Act
+    calc_str = str(intdivide_calc)
+
+    # Assert
+    # Expected string should reflect the operation name derived from the class name ('IntDivide')
+    expected_str = f"{intdivide_calc.__class__.__name__}: {a} IntDivide {b} = 3.0"
+    assert calc_str == expected_str
+
 def test_calculation_repr_representation_subtraction():
     """
     Test the __repr__ method of SubtractCalculation.
@@ -645,8 +703,9 @@ def test_calculation_repr_representation_division():
 @patch.object(Operations, 'power')
 @patch.object(Operations, 'root')
 @patch.object(Operations, 'modulus')
+@patch.object(Operations, 'intdivision')
 def test_calculation_execute_parameterized(
-    mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_result
 ):
     """
@@ -670,7 +729,8 @@ def test_calculation_execute_parameterized(
         mock_root.return_value = expected_result
     elif calc_type == 'mod':
         mock_modulus.return_value = expected_result
-
+    elif calc_type == 'intdivide':
+        mock_intdivision.return_value = expected_result
     # Act: Create calculation instance and execute
     calc = CalculationFactory.create_calculation(calc_type, a, b)
     result = calc.execute()
@@ -690,7 +750,8 @@ def test_calculation_execute_parameterized(
         mock_root.assert_called_once_with(a, b)
     elif calc_type == 'mod':
         mock_root.assert_called_once_with(a, b)
-
+    elif calc_type == 'intdivide':
+        mock_root.assert_called_once_with(a, b)
     assert result == expected_result
 
 
@@ -713,8 +774,9 @@ def test_calculation_execute_parameterized(
 @patch.object(Operations, 'power', return_value=27.0)
 @patch.object(Operations, 'root', return_value=3.0)
 @patch.object(Operations, 'modulus', return_value=1.0)
+@patch.object(Operations, 'intdivision', return_value=3.0)
 def test_calculation_str_parameterized(
-    mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_str
 ):
     """
