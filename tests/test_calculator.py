@@ -296,7 +296,7 @@ def test_calculator_modulus_zero(monkeypatch, capsys):
     captured = capsys.readouterr()
     assert "Cannot divide by zero." in captured.out
 
-def test_calculator_division(monkeypatch, capsys):
+def test_calculator_intdivision(monkeypatch, capsys):
     """
     Test the calculator's intdivision operation.
     """
