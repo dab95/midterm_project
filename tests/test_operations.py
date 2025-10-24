@@ -637,7 +637,7 @@ def test_modulus_with_zero_divisor():
     assert str(exc_info.value) == "Division by zero is not allowed."
 
 
-def test_division_with_zero_numerator():
+def test_modulus_with_zero_numerator():
     """
     Test the modulus method with zero as the dividend.
     
@@ -650,6 +650,99 @@ def test_division_with_zero_numerator():
 
     # Act
     result = Operations.modulus(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+# -----------------------------------------------------------------------------------
+# Test Division Method
+# -----------------------------------------------------------------------------------
+
+def test_intdivision_positive():
+    """
+    Test the intdivision method with two positive numbers.
+    
+    This test verifies that dividing two positive numbers returns the correct quotient.
+    """
+    # Arrange
+    a = 10.0
+    b = 3.0
+    expected_result = 3.0
+
+    # Act
+    result = Operations.intdivision(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
+def test_intdivision_negative_numbers():
+    """
+    Test the intdivision method with two negative numbers.
+    
+    This test verifies that dividing two negative numbers returns the correct quotient.
+    """
+    # Arrange
+    a = -10.0
+    b = -3.0
+    expected_result = 3.0
+
+    # Act
+    result = Operations.intdivision(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+
+
+def test_intdivision_positive_negative():
+    """
+    Test the intdivision method with one positive and one negative number.
+    
+    This test verifies that dividing a positive number by a negative number returns the correct quotient.
+    """
+    # Arrange
+    a = 10.0
+    b = -3.0
+    expected_result = -4.0
+
+    # Act
+    result = Operations.intdivision(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+
+
+def test_intdivision_with_zero_divisor():
+    """
+    Test the intdivision method with zero as the divisor.
+    
+    This test verifies that dividing any number by zero raises a ValueError.
+    """
+    # Arrange
+    a = 10.0
+    b = 0.0
+
+    # Act & Assert
+    with pytest.raises(ValueError) as exc_info:
+        Operations.intdivision(a, b)
+    
+    # Verify that the exception message is as expected
+    assert str(exc_info.value) == "Division by zero is not allowed."
+
+
+def test_intdivision_with_zero_numerator():
+    """
+    Test the intdivision method with zero as the numerator.
+    
+    This test verifies that dividing zero by a non-zero number returns zero.
+    """
+    # Arrange
+    a = 0.0
+    b = 5.0
+    expected_result = 0.0
+
+    # Act
+    result = Operations.intdivision(a, b)
 
     # Assert
     assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
@@ -678,3 +771,4 @@ def test_operations_invalid_input_types(calc_method, a, b, expected_exception):
     # Act & Assert
     with pytest.raises(expected_exception):
         calc_method(a, b)
+
