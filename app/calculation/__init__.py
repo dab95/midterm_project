@@ -155,3 +155,15 @@ class PowerCalculation(Calculation):
     def execute(self) -> float:
         #calls power method from Operations module to perform the power
         return Operations.power(self.a, self.b)
+    
+
+@CalculationFactory.register_calculation('root')
+class RootCalculation(Calculation):
+    """
+    RootCalculation represents a root operation.
+    calls execute method to perform root from Operations module.
+    """
+
+    def execute(self) -> float:
+        #calls power method from Operations module to perform the power
+        return Operations.root(self.a, self.b)
