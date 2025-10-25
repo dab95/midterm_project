@@ -120,3 +120,13 @@ class Operations:
             # This part checks if 'b' is zero. If it is, we raise an error and stop the method.
             raise ValueError("Division by zero is not allowed.")  # This sends an error message when someone tries to divide by zero.
         return a // b  #perform operation if b is not zero and return whole quotient.
+    
+    @staticmethod
+    def percentage(a: float, b: float) -> float:
+        """
+        This static method takes two numbers (a and b) and returns their percentage of a in b.
+        Example: if we call Operations.percentage( 5.0, 20.0 ), it will return 25.0.
+        """
+        if b == 0: 
+            return 0.0 # Return 0% if b is zero
+        return ( a / b ) * 100 # This multiplies the two numbers and returns the result.

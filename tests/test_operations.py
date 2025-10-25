@@ -449,7 +449,7 @@ def test_root_positive():
     result = Operations.root(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} root {b} to be {expected_result}, got {result}"
 
 
 def test_root_negative_numbers(): 
@@ -487,7 +487,7 @@ def test_root_negative_positive_odd():
     result = Operations.root(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} root ({b}) to be {expected_result}, got {result}"
 
 
 def test_root_negative_positive_even():
@@ -564,7 +564,7 @@ def test_modulus_positive():
     result = Operations.modulus(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
 
 
 def test_modulus_negative_numbers():
@@ -582,7 +582,7 @@ def test_modulus_negative_numbers():
     result = Operations.modulus(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
 
 
 def test_modulus_positive_negative():
@@ -600,7 +600,7 @@ def test_modulus_positive_negative():
     result = Operations.modulus(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} % ({b}) to be {expected_result}, got {result}"
 
 def test_modulus_negative_positive():
     """
@@ -617,7 +617,7 @@ def test_modulus_negative_positive():
     result = Operations.modulus(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} % ({b}) to be {expected_result}, got {result}"
 
 def test_modulus_with_zero_divisor():
     """
@@ -652,7 +652,7 @@ def test_modulus_with_zero_numerator():
     result = Operations.modulus(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
 
 # -----------------------------------------------------------------------------------
 # Test Integer Division Method
@@ -673,7 +673,7 @@ def test_intdivision_positive():
     result = Operations.intdivision(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
 
 
 def test_intdivision_negative_numbers():
@@ -691,7 +691,7 @@ def test_intdivision_negative_numbers():
     result = Operations.intdivision(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
 
 
 def test_intdivision_positive_negative():
@@ -709,7 +709,7 @@ def test_intdivision_positive_negative():
     result = Operations.intdivision(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} // ({b}) to be {expected_result}, got {result}"
 
 
 def test_intdivision_with_zero_divisor():
@@ -745,7 +745,101 @@ def test_intdivision_with_zero_numerator():
     result = Operations.intdivision(a, b)
 
     # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
+    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
+
+
+# -----------------------------------------------------------------------------------
+# Test Percentage Method
+# -----------------------------------------------------------------------------------
+
+def test_percentage_positive():
+    """
+    Test the percentage method with two positive numbers.
+    
+    This test verifies that taking the percentage two positive numbers returns the correct number.
+    """
+    # Arrange
+    a = 5.0
+    b = 20.0
+    expected_result = 25.0
+
+    # Act
+    result = Operations.percentage(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
+
+
+def test_percentage_negative_numbers():
+    """
+    Test the percentage method with two negative numbers.
+    
+    This test verifies that finding the percent two negative numbers returns the correct number.
+    """
+    # Arrange
+    a = -5.0
+    b = -20.0
+    expected_result = 25.0
+
+    # Act
+    result = Operations.percentage(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
+
+
+def test_percentage_positive_negative():
+    """
+    Test the percentage method with one positive and one negative number.
+    
+    This test verifies that finding the percent of a positive number by a negative number returns the correct number.
+    """
+    # Arrange
+    a = 5.0
+    b = -20.0
+    expected_result = -25.0
+
+    # Act
+    result = Operations.percentage(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} percent ({b}) to be {expected_result}, got {result}"
+
+
+def test_percentage_with_zero_divisor():
+    """
+    Test the percentage method with zero as the divisor, any percentage of zero.
+    
+    This test verifies that finding any percent of zero with return zero.
+    """
+    # Arrange
+    a = 10.0
+    b = 0.0
+    expected_result = 0.0
+
+    # Act & Assert
+    result = Operations.percentage(a, b)
+    
+    # Verify that the exception message is as expected
+    assert result == expected_result, f"Expected {a} percent ({b}) to be {expected_result}, got {result}"
+
+
+def test_percentage_with_zero_numerator():
+    """
+    Test the percentage method with zero as the numerator.
+    
+    This test verifies that finding zero percent of a non-zero number returns zero.
+    """
+    # Arrange
+    a = 0.0
+    b = 5.0
+    expected_result = 0.0
+
+    # Act
+    result = Operations.percentage(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
 
 
 # -----------------------------------------------------------------------------------
