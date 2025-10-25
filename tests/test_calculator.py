@@ -12,7 +12,7 @@ import pytest
 from io import StringIO
 
 # Import the functions to be tested from calculator __init__
-from app.calculator import display_help, calculator, display_history
+from app.calculator_repl import display_help, calculator, display_history
 
 def test_display_help(capsys):
     """
