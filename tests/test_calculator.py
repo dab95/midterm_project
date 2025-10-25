@@ -41,6 +41,7 @@ Usage:
         root      : Calculates the nth root of a number.
         mod       : Returns the remainder of division of the first number by the second.
         intdivide : Performs integer division of the first number by the second.
+        percent   : Calculates what percentage the first number is of the second.
 
 Special Commands:
     help      : Display this help message.
@@ -56,6 +57,7 @@ Examples:
     root 4 2
     mod 10 3
     intdivide 10 3
+    percent 5 20
 """
     # Remove leading/trailing whitespace for comparison
     assert captured.out.strip() == expected_output.strip()
@@ -327,6 +329,38 @@ def test_calculator_intdivision_by_zero(monkeypatch, capsys):
     # Assert
     captured = capsys.readouterr()
     assert "Cannot divide by zero." in captured.out
+
+def test_calculator_percent(monkeypatch, capsys):
+    """
+    Test the calculator's percent operation.
+    """
+    # Arrange
+    user_input = 'percent 5 20\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: PercentageCalculation: 5.0 Percentage 20.0 = 25.0" in captured.out
+
+def test_calculator_percent_of_zero(monkeypatch, capsys):
+    """
+    Test the calculator's handling of percentage of zero.
+    """
+    # Arrange
+    user_input = 'percent 10 0\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: PercentageCalculation: 10.0 Percentage 0.0 = 0.0" in captured.out
 
 def test_calculator_history(monkeypatch, capsys):
     """

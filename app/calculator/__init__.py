@@ -21,6 +21,7 @@ Usage:
         root      : Calculates the nth root of a number.
         mod       : Returns the remainder of division of the first number by the second.
         intdivide : Performs integer division of the first number by the second.
+        percent   : Calculates what percentage the first number is of the second.
 
 Special Commands:
     help      : Display this help message.
@@ -36,6 +37,7 @@ Examples:
     root 4 2
     mod 10 3
     intdivide 10 3
+    percent 5 20
     """
     print(help_message)
 
