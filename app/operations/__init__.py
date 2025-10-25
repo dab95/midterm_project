@@ -54,8 +54,7 @@ class Operations:
             # This part checks if 'b' is zero. If it is, we raise an error and stop the method.
             raise ValueError("Division by zero is not allowed.")  # This sends an error message when someone tries to divide by zero.
         return a / b  # If 'b' is not zero, we divide the first number (a) by the second number (b) and return the result.
-
-
+    
     @staticmethod
     def power(a: float, b: float) -> float:
         """
@@ -92,8 +91,7 @@ class Operations:
 
                 
 
-        return (a) ** (1/b)  # This returns the root the two numbers and returns the result.
-    
+        return (a) ** (1/b)  # This returns the root the two numbers and returns the result.   
 
     @staticmethod
     def modulus(a: float, b: float) -> float:
@@ -130,3 +128,13 @@ class Operations:
         if b == 0: 
             return 0.0 # Return 0% if b is zero
         return ( a / b ) * 100 # This multiplies the two numbers and returns the result.
+       
+       
+    @staticmethod
+    def absolute_difference(a: float, b: float) -> float:
+        """
+        This static method takes two numbers (a and b) and returns their absoulue difference.
+        Just like the addition method, it expects two numbers and returns their result.
+        Example: if we call Operations.absuloute_differnce(-4.0, 2.0), it will return 6.0.
+        """
+        return abs(a - b)  # This subtracts the second number (b) from the first number (a) and returns the absolute difference.

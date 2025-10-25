@@ -841,6 +841,82 @@ def test_percentage_with_zero_numerator():
     # Assert
     assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
 
+# -----------------------------------------------------------------------------------
+# Test Absolute Differnce Method
+# -----------------------------------------------------------------------------------
+
+def test_absolute_differnce_positive():
+    """
+    Test the absolute differnce method with two positive numbers.
+    
+    This test verifies that subtracting two positive numbers returns the correct difference.
+    """
+    # Arrange
+    a = 5.0
+    b = 3.0
+    expected_result = 2.0
+
+    # Act
+    result = Operations.absolute_difference(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected |{a} - {b}| to be {expected_result}, got {result}"
+
+
+def test_absolute_difference_negative_numbers():
+    """
+    Test the absolute differnce method with two negative numbers.
+    
+    This test verifies that the absolute difference of two negative numbers returns the correct difference.
+    """
+    # Arrange
+    a = -10.0
+    b = -5.0
+    expected_result = 5.0
+
+    # Act
+    result = Operations.absolute_difference(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected |({a}) - ({b})| to be {expected_result}, got {result}"
+
+
+def test_absolute_difference_positive_negative():
+    """
+    Test the absolute difference method with one positive and one negative number.
+    
+    This test verifies that subtracting a negative number from a positive number returns the 
+    correct absolute difference.
+    """
+    # Arrange
+    a = -3.0
+    b = 12.0
+    expected_result = 15.0
+
+    # Act
+    result = Operations.absolute_difference(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected |{a} - ({b})| to be {expected_result}, got {result}"
+
+
+def test_absolute_difference_with_zero():
+    """
+    Test the absolute difference method with zero as one of the operands.
+    
+    This test verifies that subtracting zero from a number returns the number itself.
+    """
+    # Arrange
+    a = 0.0
+    b = 4.0
+    expected_result = 4.0
+
+    # Act
+    result = Operations.absolute_difference(a, b)
+
+    # Assert
+    assert result == expected_result, f"Expected |{a} - {b}| to be {expected_result}, got {result}"
+
 
 # -----------------------------------------------------------------------------------
 # Test Invalid Input Types (Negative Testing)
