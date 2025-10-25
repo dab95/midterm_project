@@ -10,6 +10,7 @@ __pycache__/
 
 # Virtual environment folder
 venv/
+.venv
 
 # Distribution / packaging
 .Python
