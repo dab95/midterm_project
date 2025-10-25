@@ -1,229 +1,254 @@
-# calculator_calculations.py
+########################
+# Calculation Model    #
+########################
 
-from abc import ABC, abstractmethod #abstract base class for specifying methods for subclasses
-from app.operations import Operations #import operations classess from operations __init__
+from dataclasses import dataclass, field
+import datetime
+from decimal import Decimal, InvalidOperation
+import logging
+from typing import Any, Dict
 
-#Abstract Base Class: Calculation
-class Calculation(ABC):
+from app.exception import OperationError
+
+
+
+@dataclass
+class Calculation:
     """
-    The Calculation abstract base class serves as a blueprint for the mathematical
-    calculations in the calculator program. This class establishes a consistent 
-    interface for all calculation types.   
+    Value Object representing a single calculation.
+
+    This class encapsulates the details of a mathematical calculation, including the
+    operation performed, operands involved, the result, and the timestamp of the
+    calculation. It provides methods for performing the calculation, serializing
+    the data for storage, and deserializing data to recreate a Calculation instance.
     """
 
-    #initialization for calculation instance with two operands a and b
-    def __init__(self, a: float, b: float) -> None:
+    # Required fields
+    operation: str          # The name of the operation (e.g., "Addition")
+    operand1: Decimal       # The first operand in the calculation
+    operand2: Decimal       # The second operand in the calculation
 
-        #operands a and b stored as float
-        self.a: float = a
-        self.b: float = b
+    # Fields with default values
+    result: Decimal = field(init=False)  # The result of the calculation, computed post-initialization
+    timestamp: datetime.datetime = field(default_factory=datetime.datetime.now)  # Time when the calculation was performed
 
-    @abstractmethod
-    #abstract method used by subclasses to perform the calculations for requested operation.
-    def execute(self) -> float: 
-        pass # pragma: no cover
+    def __post_init__(self):
+        """
+        Post-initialization processing.
 
+        Automatically calculates the result of the operation after the Calculation
+        instance is created.
+        """
+        self.result = self.calculate()
 
-    #return string of calculation instance from input (operands, operation and result)
+    def calculate(self) -> Decimal:
+        """
+        Execute calculation using the specified operation.
+
+        Utilizes a dictionary to map operation names to their corresponding
+        lambda functions, enabling dynamic execution of operations based on
+        the operation name.
+
+        Returns:
+            Decimal: The result of the calculation.
+
+        Raises:
+            OperationError: If the operation is unknown or the calculation fails.
+        """
+        # Mapping of operation names to their corresponding functions
+        operations = {
+            "Addition": lambda x, y: x + y,
+            "Subtraction": lambda x, y: x - y,
+            "Multiplication": lambda x, y: x * y,
+            "Division": lambda x, y: x / y if y != 0 else self._raise_div_zero(),
+            "Power": lambda x, y: Decimal(pow(float(x), float(y))) if y >= 0 else self._raise_neg_power(),
+            "Root": lambda x, y: (
+                Decimal(pow(float(x), 1 / float(y))) 
+                if x >= 0 and y != 0 
+                else self._raise_invalid_root(x, y)
+            ),
+            "Modulus": lambda x, y: x % y if y != 0 else self._raise_div_zero(),
+            "Int_Division": lambda x, y: x // y if y != 0 else self._raise_div_zero(),
+            "Percent": lambda x, y: (x / y) * Decimal(100) if y != 0 else self._raise_div_zero(),
+            "AbsoluteDifference": lambda x, y: abs(x - y),
+        }
+
+        # Retrieve the operation function based on the operation name
+        op = operations.get(self.operation)
+        if not op:
+            raise OperationError(f"Unknown operation: {self.operation}")
+
+        try:
+            # Execute the operation with the provided operands
+            return op(self.operand1, self.operand2)
+        except (InvalidOperation, ValueError, ArithmeticError) as e:
+            # Handle any errors that occur during calculation
+            raise OperationError(f"Calculation failed: {str(e)}")
+
+    @staticmethod
+    def _raise_div_zero():  # pragma: no cover
+        """
+        Helper method to raise division by zero error.
+
+        This method is called when a division by zero is attempted.
+        """
+        raise OperationError("Division by zero is not allowed")
+
+    @staticmethod
+    def _raise_neg_power():  # pragma: no cover
+        """
+        Helper method to raise negative power error.
+
+        This method is called when a negative exponent is used in a power operation.
+        """
+        raise OperationError("Negative exponents are not supported")
+
+    @staticmethod
+    def _raise_invalid_root(x: Decimal, y: Decimal):  # pragma: no cover
+        """
+        Helper method to raise invalid root error.
+
+        This method is called when an invalid root operation is attempted, such as
+        taking the root of a negative number or using zero as the root degree.
+
+        Args:
+            x (Decimal): The number from which the root is taken.
+            y (Decimal): The degree of the root.
+        """
+        if y == 0:
+            raise OperationError("Zero root is undefined")
+        if x < 0:
+            raise OperationError("Cannot calculate root of negative number")
+        raise OperationError("Invalid root operation")
+
+    def to_dict(self) -> Dict[str, Any]:
+        """
+        Convert calculation to dictionary for serialization.
+
+        This method transforms the Calculation instance into a dictionary format,
+        facilitating easy storage and retrieval (e.g., saving to a file).
+
+        Returns:
+            Dict[str, Any]: A dictionary containing the calculation data in a serializable format.
+        """
+        return {
+            'operation': self.operation,
+            'operand1': str(self.operand1),
+            'operand2': str(self.operand2),
+            'result': str(self.result),
+            'timestamp': self.timestamp.isoformat()
+        }
+
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> 'Calculation':
+        """
+        Create calculation from dictionary.
+
+        This method reconstructs a Calculation instance from a dictionary, ensuring
+        that all required fields are present and correctly formatted.
+
+        Args:
+            data (Dict[str, Any]): Dictionary containing calculation data.
+
+        Returns:
+            Calculation: A new instance of Calculation with data populated from the dictionary.
+
+        Raises:
+            OperationError: If data is invalid or missing required fields.
+        """
+        try:
+            # Create the calculation object with the original operands
+            calc = Calculation(
+                operation=data['operation'],
+                operand1=Decimal(data['operand1']),
+                operand2=Decimal(data['operand2'])
+            )
+
+            # Set the timestamp from the saved data
+            calc.timestamp = datetime.datetime.fromisoformat(data['timestamp'])
+
+            # Verify the result matches (helps catch data corruption)
+            saved_result = Decimal(data['result'])
+            if calc.result != saved_result:
+                logging.warning(
+                    f"Loaded calculation result {saved_result} "
+                    f"differs from computed result {calc.result}"
+                )  # pragma: no cover
+
+            return calc
+
+        except (KeyError, InvalidOperation, ValueError) as e:
+            raise OperationError(f"Invalid calculation data: {str(e)}")
+
     def __str__(self) -> str:
-        result = self.execute() #result of operation execute
-        operation_name = self.__class__.__name__.replace('Calculation', '')  #operation name
-        return f"{self.__class__.__name__}: {self.a} {operation_name} {self.b} = {result}"
+        """
+        Return string representation of calculation.
 
+        Provides a human-readable representation of the calculation, showing the
+        operation performed and its result.
 
-    #return technical representation of calculation instance for debugging (class name and operands)
+        Returns:
+            str: Formatted string showing the calculation and result.
+        """
+        return f"{self.operation}({self.operand1}, {self.operand2}) = {self.result}"
+
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(a={self.a}, b={self.b})"
-
-
-#-----------------------------------
-#Factory Class: CalculationFactory
-class CalculationFactory:
-    """
-    CalculationFactory is used to create instances of Calculation subclasses. 
-    It allows for code orgaization and flexibility for adding new calculations.
-    """
-
-    # _calculations is a dictionary that holds a mapping of calculation types 
-    _calculations = {}
-
-    @classmethod
-    def register_calculation(cls, calculation_type: str):
         """
-        the register_caclculation decorator used to register a specific 
-        Calculation subclass under a unique calculation type.
+        Return detailed string representation of calculation.
+
+        Provides a detailed and unambiguous string representation of the Calculation
+        instance, useful for debugging.
+
+        Returns:
+            str: Detailed string showing all calculation attributes.
         """
+        return (
+            f"Calculation(operation='{self.operation}', "
+            f"operand1={self.operand1}, "
+            f"operand2={self.operand2}, "
+            f"result={self.result}, "
+            f"timestamp='{self.timestamp.isoformat()}')"
+        )
 
-        def decorator(subclass):
-            #convert calculation type to lowercase
-            calculation_type_lower = calculation_type.lower()
-
-            #check if calculation type already exists, raise exception if true
-            if calculation_type_lower in cls._calculations:
-                raise ValueError(f"Calculation type '{calculation_type}' is already registered.")
-            
-            #register new subclass in the _calculations dictionary
-            cls._calculations[calculation_type_lower] = subclass
-
-            return subclass  #return subclass for chaining or additional use
-        return decorator  #returns decorator function.
-
-    @classmethod
-    def create_calculation(cls, calculation_type: str, a: float, b: float) -> Calculation:
+    def __eq__(self, other: object) -> bool:
         """
-        the create_calculation class method creates instances of Calculation subclasses 
-        using the calculation_type and float operands a and b
+        Check if two calculations are equal.
+
+        Compares two Calculation instances to determine if they represent the same
+        operation with identical operands and results.
+
+        Args:
+            other (object): Another calculation to compare with.
+
+        Returns:
+            bool: True if calculations are equal, False otherwise.
         """
+        if not isinstance(other, Calculation):
+            return NotImplemented
+        return (
+            self.operation == other.operation and
+            self.operand1 == other.operand1 and
+            self.operand2 == other.operand2 and
+            self.result == other.result
+        )
 
-        #convert calculation type to lowercase
-        calculation_type_lower = calculation_type.lower()
+    def format_result(self, precision: int = 10) -> str:
+        """
+        Format the calculation result with specified precision.
 
-        #get calculation from _calculations dictionary
-        calculation_class = cls._calculations.get(calculation_type_lower)
+        This method formats the result to a fixed number of decimal places,
+        removing any trailing zeros for a cleaner presentation.
 
-        #raise exception if calculation type is not supported
-        if not calculation_class:
-            available_types = ', '.join(cls._calculations.keys())
-            raise ValueError(f"Unsupported calculation type: '{calculation_type}'. Available types: {available_types}")
-        
-        #create and return instance of calculation with operands a and b
-        return calculation_class(a, b)
-#--------------------------------
-# Concrete Calculation Classes
-@CalculationFactory.register_calculation('add')
-class AddCalculation(Calculation):
-    """
-    AddCalculation represents an addition operation between two numbers. 
-    subclass uses execute method to perform addition from Operations module.
-    """
+        Args:
+            precision (int, optional): Number of decimal places to show. Defaults to 10.
 
-    def execute(self) -> float:
-        #calls addition method from Operations module to perform addition
-        return Operations.addition(self.a, self.b)
-
-
-@CalculationFactory.register_calculation('subtract')
-class SubtractCalculation(Calculation):
-    """
-    SubtractCalculation represents a subtraction operation between two numbers.
-    uses execute method to perform subtraction from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls subtraction method from Operations module to perform subtraction
-        return Operations.subtraction(self.a, self.b)
-
-
-@CalculationFactory.register_calculation('multiply')
-class MultiplyCalculation(Calculation):
-    """
-    MultiplyCalculation represents a multiplication operation.
-    calls execute method to perform multiplication from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls multiplication method from Operations module to perform the multiplication
-        return Operations.multiplication(self.a, self.b)
-
-
-@CalculationFactory.register_calculation('divide')
-class DivideCalculation(Calculation):
-    """
-    DivideCalculation represents a division operation.
-    
-    **Special Case - Division by Zero**: Division requires extra error handling to 
-    prevent dividing by zero, which would cause an error in the program. This class 
-    checks if the second operand is zero before performing the operation.
-    """
-
-    def execute(self) -> float:
-        #check if b operand is zero, raise exception if true
-        if self.b == 0:
-            raise ZeroDivisionError("Cannot divide by zero.")
-        
-        #calls division method from Operations module to perform division
-        return Operations.division(self.a, self.b)
-    
-
-@CalculationFactory.register_calculation('power')
-class PowerCalculation(Calculation):
-    """
-    PowerCalculation represents a power operation.
-    calls execute method to perform power from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls power method from Operations module to perform the power
-        return Operations.power(self.a, self.b)
-    
-
-@CalculationFactory.register_calculation('root')
-class RootCalculation(Calculation):
-    """
-    RootCalculation represents a root operation.
-    calls execute method to perform root from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls power method from Operations module to perform the power
-        return Operations.root(self.a, self.b)
-
-
-@CalculationFactory.register_calculation('mod')
-class ModulusCalculation(Calculation):
-    """
-    ModulusCalculation represents a mod operation.
-    
-    **Special Case - Division by Zero**: Division requires extra error handling to 
-    prevent dividing by zero, which would cause an error in the program. This class 
-    checks if the second operand is zero before performing the operation.
-    """
-
-    def execute(self) -> float:
-        #check if b operand is zero, raise exception if true
-        if self.b == 0:
-            raise ZeroDivisionError("Cannot divide by zero.")
-        
-        #calls division method from Operations module to perform division
-        return Operations.modulus(self.a, self.b)
-    
-
-@CalculationFactory.register_calculation('intdivide')
-class IntDivideCalculation(Calculation):
-    """
-    IntDivideCalculation represents a integer division operation.
-    
-    **Special Case - Division by Zero**: Division requires extra error handling to 
-    prevent dividing by zero, which would cause an error in the program. This class 
-    checks if the second operand is zero before performing the operation.
-    """
-
-    def execute(self) -> float:
-        #check if b operand is zero, raise exception if true
-        if self.b == 0:
-            raise ZeroDivisionError("Cannot divide by zero.")
-        
-        #calls division method from Operations module to perform division
-        return Operations.intdivision(self.a, self.b)
-    
-@CalculationFactory.register_calculation('percent')
-class PercentageCalculation(Calculation):
-    """
-    PercentageCalculation represents a percent operation.
-    calls execute method to perform percentage from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls power method from Operations module to perform the power
-        return Operations.percentage(self.a, self.b)
-    
-@CalculationFactory.register_calculation('abs_diff')
-class abs_diffCalculation(Calculation):
-    """
-    PercentageCalculation represents a percent operation.
-    calls execute method to perform percentage from Operations module.
-    """
-
-    def execute(self) -> float:
-        #calls power method from Operations module to perform the power
-        return Operations.absolute_difference(self.a, self.b)
+        Returns:
+            str: Formatted string representation of the result.
+        """
+        try:
+            # Remove trailing zeros and format to specified precision
+            return str(self.result.normalize().quantize(
+                Decimal('0.' + '0' * precision)
+            ).normalize())
+        except InvalidOperation:  # pragma: no cover
+            return str(self.result)
