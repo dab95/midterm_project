@@ -22,6 +22,7 @@ Usage:
         mod       : Returns the remainder of division of the first number by the second.
         intdivide : Performs integer division of the first number by the second.
         percent   : Calculates what percentage the first number is of the second.
+        abs_diff  : Calculates the absolute difference between two numbers.
 
 Special Commands:
     help      : Display this help message.
@@ -38,6 +39,7 @@ Examples:
     mod 10 3
     intdivide 10 3
     percent 5 20
+    abs_diff -4 2
     """
     print(help_message)
 

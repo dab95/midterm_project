@@ -42,6 +42,7 @@ Usage:
         mod       : Returns the remainder of division of the first number by the second.
         intdivide : Performs integer division of the first number by the second.
         percent   : Calculates what percentage the first number is of the second.
+        abs_diff  : Calculates the absolute difference between two numbers.
 
 Special Commands:
     help      : Display this help message.
@@ -58,6 +59,7 @@ Examples:
     mod 10 3
     intdivide 10 3
     percent 5 20
+    abs_diff -4 2
 """
     # Remove leading/trailing whitespace for comparison
     assert captured.out.strip() == expected_output.strip()
@@ -361,6 +363,23 @@ def test_calculator_percent_of_zero(monkeypatch, capsys):
     # Assert
     captured = capsys.readouterr()
     assert "Result: PercentageCalculation: 10.0 Percentage 0.0 = 0.0" in captured.out
+
+def test_calculator_abs_diff(monkeypatch, capsys):
+    """
+    Test the calculator's absolute difference operation.
+    """
+    # Arrange
+    user_input = 'abs_diff -4 2\nexit\n'
+    monkeypatch.setattr('sys.stdin', StringIO(user_input))
+
+    # Act
+    with pytest.raises(SystemExit):
+        calculator()
+
+    # Assert
+    captured = capsys.readouterr()
+    assert "Result: abs_diffCalculation: -4.0 abs_diff 2.0 = 6.0" in captured.out
+
 
 def test_calculator_history(monkeypatch, capsys):
     """
