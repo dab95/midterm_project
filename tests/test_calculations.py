@@ -25,6 +25,7 @@ from app.calculation import (
     ModulusCalculation,
     IntDivideCalculation,
     PercentageCalculation,
+    abs_diffCalculation,
     Calculation
 )
 
@@ -447,6 +448,25 @@ def test_factory_creates_percent_calculation():
     assert calc.a == a
     assert calc.b == b
 
+def test_factory_creates_subtract_calculation():
+    """
+    Test that CalculationFactory creates a SubtractCalculation instance.
+
+    This test verifies that the factory correctly instantiates the SubtractCalculation
+    class when the 'subtract' calculation type is requested.
+    """
+    # Arrange
+    a = 10.0
+    b = 5.0
+
+    # Act
+    calc = CalculationFactory.create_calculation('abs_diff', a, b)
+
+    # Assert
+    assert isinstance(calc, abs_diffCalculation)
+    assert calc.a == a
+    assert calc.b == b
+
 def test_factory_create_unsupported_calculation():
     """
     Test that CalculationFactory raises ValueError when an unsupported calculation type is requested.
@@ -683,6 +703,27 @@ def test_calculation_str_representation_percent(mock_percent):
     expected_str = f"{percent_calc.__class__.__name__}: {a} Percentage {b} = 25.0"
     assert calc_str == expected_str
 
+@patch.object(Operations, 'absolute_difference', return_value=5.0)
+def test_calculation_str_representation_abs_diff(mock_abs_diff):
+    """
+    Test the __str__ method of abs_diffCalculation.
+
+    This test verifies that the string representation of a abs_diffCalculation instance
+    is formatted correctly, displaying the class name, operation, operands, and result.
+    """
+    # Arrange
+    a = 10.0
+    b = 5.0
+    abs_diff_calc = abs_diffCalculation(a, b)
+
+    # Act
+    calc_str = str(abs_diff_calc)
+
+    # Assert
+    # Expected string should reflect the operation name derived from the class name ('abs_diff')
+    expected_str = f"{abs_diff_calc.__class__.__name__}: {a} abs_diff {b} = 5.0"
+    assert calc_str == expected_str
+
 def test_calculation_repr_representation_subtraction():
     """
     Test the __repr__ method of SubtractCalculation.
@@ -746,8 +787,9 @@ def test_calculation_repr_representation_division():
 @patch.object(Operations, 'modulus')
 @patch.object(Operations, 'intdivision')
 @patch.object(Operations, 'percentage')
+@patch.object(Operations, 'absolute_difference')
 def test_calculation_execute_parameterized(
-    mock_percent, mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_abs_diff, mock_percent, mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_result
 ):
     """
@@ -775,6 +817,8 @@ def test_calculation_execute_parameterized(
         mock_intdivision.return_value = expected_result
     elif calc_type == 'percent':
         mock_percent.return_value = expected_result
+    elif calc_type == 'abs_diff':
+        mock_abs_diff.return_value = expected_result
     # Act: Create calculation instance and execute
     calc = CalculationFactory.create_calculation(calc_type, a, b)
     result = calc.execute()
@@ -798,6 +842,8 @@ def test_calculation_execute_parameterized(
         mock_intdivision.assert_called_once_with(a, b)
     elif calc_type == 'percent':
         mock_percent.assert_called_once_with(a, b)
+    elif calc_type == 'abs_diff':
+        mock_abs_diff.assert_called_once_with(a, b)
     assert result == expected_result
 
 
@@ -822,8 +868,9 @@ def test_calculation_execute_parameterized(
 @patch.object(Operations, 'modulus', return_value=1.0)
 @patch.object(Operations, 'intdivision', return_value=3.0)
 @patch.object(Operations, 'percentage', return_value=25.0)
+@patch.object(Operations, 'absolute_difference', return_value=5.0)
 def test_calculation_str_parameterized(
-    mock_percent, mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
+    mock_abs_diff, mock_percent, mock_intdivision, mock_modulus, mock_root, mock_power, mock_division, mock_multiplication, mock_subtraction, mock_addition,
     calc_type, a, b, expected_str
 ):
     """

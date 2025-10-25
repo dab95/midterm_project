@@ -216,3 +216,14 @@ class PercentageCalculation(Calculation):
     def execute(self) -> float:
         #calls power method from Operations module to perform the power
         return Operations.percentage(self.a, self.b)
+    
+@CalculationFactory.register_calculation('abs_diff')
+class abs_diffCalculation(Calculation):
+    """
+    PercentageCalculation represents a percent operation.
+    calls execute method to perform percentage from Operations module.
+    """
+
+    def execute(self) -> float:
+        #calls power method from Operations module to perform the power
+        return Operations.absolute_difference(self.a, self.b)
