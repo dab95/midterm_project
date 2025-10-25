@@ -205,3 +205,14 @@ class IntDivideCalculation(Calculation):
         
         #calls division method from Operations module to perform division
         return Operations.intdivision(self.a, self.b)
+    
+@CalculationFactory.register_calculation('percent')
+class PercentageCalculation(Calculation):
+    """
+    PercentageCalculation represents a percent operation.
+    calls execute method to perform percentage from Operations module.
+    """
+
+    def execute(self) -> float:
+        #calls power method from Operations module to perform the power
+        return Operations.percentage(self.a, self.b)
