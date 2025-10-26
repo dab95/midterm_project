@@ -10,6 +10,8 @@ from app.exception import OperationError, ValidationError
 from app.history import AutoSaveObserver, LoggingObserver
 from app.operations import OperationFactory
 
+from colorama import Fore, Back, Style
+
 
 def calculator_repl():
     """
@@ -30,29 +32,33 @@ def calculator_repl():
 
         while True:
             try:
+                print(Style.RESET_ALL)
                 # Prompt the user for a command
                 command = input("\nEnter command: ").lower().strip()
+                print(Style.RESET_ALL)
 
                 if command == 'help':
                     # Display available commands
-                    print("\nAvailable commands:")
-                    print("  add, subtract, multiply, divide, power, root, mod, int_divide, percent, abs_diff - Perform calculations")
-                    print("  history - Show calculation history")
-                    print("  clear - Clear calculation history")
-                    print("  undo - Undo the last calculation")
-                    print("  redo - Redo the last undone calculation")
-                    print("  save - Save calculation history to file")
-                    print("  load - Load calculation history from file")
-                    print("  exit - Exit the calculator")
+                    print(Style.BRIGHT + Fore.YELLOW + "\nAvailable commands:")
+                    print(Style.BRIGHT + Fore.YELLOW +"  add, subtract, multiply, divide, power, root, mod, int_divide, percent, abs_diff - Perform calculations")
+                    print(Style.BRIGHT + Fore.YELLOW +"  history - Show calculation history")
+                    print(Style.BRIGHT + Fore.YELLOW +"  clear - Clear calculation history")
+                    print(Style.BRIGHT + Fore.YELLOW +"  undo - Undo the last calculation")
+                    print(Style.BRIGHT + Fore.YELLOW +"  redo - Redo the last undone calculation")
+                    print(Style.BRIGHT + Fore.YELLOW +"  save - Save calculation history to file")
+                    print(Style.BRIGHT + Fore.YELLOW +"  load - Load calculation history from file")
+                    print(Style.BRIGHT + Fore.YELLOW +"  exit - Exit the calculator")
+                    print(Style.RESET_ALL)
                     continue
 
                 if command == 'exit':
                     # Attempt to save history before exiting
                     try:
                         calc.save_history()
-                        print("History saved successfully.")
+                        print(Style.BRIGHT+ Fore.CYAN +"History saved successfully.")
                     except Exception as e:
-                        print(f"Warning: Could not save history: {e}")
+                        print(Style.BRIGHT+ Fore.RED +f"Warning: Could not save history: {e}")
+                    print(Style.RESET_ALL)    
                     print("Goodbye!")
                     break
 
@@ -60,33 +66,33 @@ def calculator_repl():
                     # Display calculation history
                     history = calc.show_history()
                     if not history:
-                        print("No calculations in history")
+                        print(Style.DIM+ Fore.RED +"No calculations in history")
                     else:
-                        print("\nCalculation History:")
+                        print(Style.BRIGHT+ Fore.BLUE +"\nCalculation History:")
                         for i, entry in enumerate(history, 1):
-                            print(f"{i}. {entry}")
+                            print(Style.BRIGHT+ Fore.BLUE +f"{i}. {entry}")
                     continue
 
                 if command == 'clear':
                     # Clear calculation history
                     calc.clear_history()
-                    print("History cleared")
+                    print(Style.BRIGHT+ Fore.BLUE +"History cleared")
                     continue
 
                 if command == 'undo':
                     # Undo the last calculation
                     if calc.undo():
-                        print("Operation undone")
+                        print(Style.BRIGHT+ Fore.CYAN +"Operation undone")
                     else:
-                        print("Nothing to undo")
+                        print(Style.DIM + Fore.CYAN +"Nothing to undo")
                     continue
 
                 if command == 'redo':
                     # Redo the last undone calculation
                     if calc.redo():
-                        print("Operation redone")
+                        print(Style.BRIGHT+ Fore.CYAN +"Operation redone")
                     else:
-                        print("Nothing to redo")
+                        print(Style.BRIGHT+ Fore.CYAN +"Nothing to redo")
                     continue
 
                 if command == 'save':
@@ -95,7 +101,7 @@ def calculator_repl():
                         calc.save_history()
                         print("History saved successfully")
                     except Exception as e:
-                        print(f"Error saving history: {e}")
+                        print(Style.BRIGHT+ Fore.RED +f"Error saving history: {e}")
                     continue
 
                 if command == 'load':
@@ -104,7 +110,7 @@ def calculator_repl():
                         calc.load_history()
                         print("History loaded successfully")
                     except Exception as e:
-                        print(f"Error loading history: {e}")
+                        print(Style.BRIGHT+ Fore.RED +f"Error loading history: {e}")
                     continue
 
                 if command in ['add', 'subtract', 'multiply', 'divide', 'power', 'root', 'mod', 'int_divide', 'percent', 'abs_diff']:
@@ -113,11 +119,11 @@ def calculator_repl():
                         print("\nEnter numbers (or 'cancel' to abort):")
                         a = input("First number: ")
                         if a.lower() == 'cancel':
-                            print("Operation cancelled")
+                            print(Style.BRIGHT+ Fore.RED+ "Operation cancelled")
                             continue
                         b = input("Second number: ")
                         if b.lower() == 'cancel':
-                            print("Operation cancelled")
+                            print(Style.BRIGHT+ Fore.RED+ "Operation cancelled")
                             continue
 
                         # Create the appropriate operation instance using the Factory pattern
@@ -131,33 +137,34 @@ def calculator_repl():
                         if isinstance(result, Decimal):
                             result = result.normalize()
 
-                        print(f"\nResult: {result}")
+                        print(Style.BRIGHT + Back.GREEN + f"\nResult: {result}")
                     except (ValidationError, OperationError) as e:
                         # Handle known exceptions related to validation or operation errors
-                        print(f"Error: {e}")
+                        print(Style.BRIGHT+ Fore.RED + f"Error: {e}")
+
                     except Exception as e:
                         # Handle any unexpected exceptions
-                        print(f"Unexpected error: {e}")
+                        print(Style.BRIGHT+ Fore.RED + f"Unexpected error: {e}")
                     continue
 
                 # Handle unknown commands
-                print(f"Unknown command: '{command}'. Type 'help' for available commands.")
+                print(Style.DIM + Fore.RED + f"Unknown command: '{command}'. Type 'help' for available commands.")
 
             except KeyboardInterrupt:
                 # Handle Ctrl+C interruption gracefully
-                print("\nOperation cancelled")
+                print(Style.BRIGHT+ Fore.RED +"\nOperation cancelled")
                 continue
             except EOFError:
                 # Handle end-of-file (e.g., Ctrl+D) gracefully
-                print("\nInput terminated. Exiting...")
+                print(Style.BRIGHT+ Fore.RED +"\nInput terminated. Exiting...")
                 break
             except Exception as e:
                 # Handle any other unexpected exceptions
-                print(f"Error: {e}")
+                print(Style.BRIGHT+ Fore.RED +f"Error: {e}")
                 continue
 
     except Exception as e:
         # Handle fatal errors during initialization
-        print(f"Fatal error: {e}")
-        logging.error(f"Fatal error in calculator REPL: {e}")
+        print(Style.BRIGHT+ Back.RED +f"Fatal error: {e}")
+        logging.error(Style.BRIGHT+ Back.RED +f"Fatal error in calculator REPL: {e}")
         raise
