@@ -442,3 +442,4 @@ class OperationFactory:
         if not operation_class:
             raise ValueError(f"Unknown operation: {operation_type}")
         return operation_class()
+
