@@ -1,944 +1,308 @@
-# tests/test_operations.py
-
-"""
-Unit tests for the operations module using pytest.
-
-This test suite covers both positive and negative scenarios for the Operation
-class's static methods. It ensures that arithmetic operations perform correctly
-and handle edge cases appropriately.
-
-Tests are organized following the AAA (Arrange, Act, Assert) pattern and adhere
-to PEP8 standards for code style and formatting.
-"""
-
 import pytest
-from app.operations import Operations
-
-
-# -----------------------------------------------------------------------------------
-# Test Addition Method
-# -----------------------------------------------------------------------------------
-
-def test_addition_positive():
-    """
-    Test the addition method with two positive numbers.
-    
-    This test verifies that adding two positive numbers returns the correct sum.
-    """
-    # Arrange
-    a = 9.0
-    b = 5.0
-    expected_result = 14.0
-
-    # Act
-    result = Operations.addition(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} + {b} to be {expected_result}, got {result}"
-
-
-def test_addition_negative_numbers():
-    """
-    Test the addition method with two negative numbers.
-    
-    This test verifies that adding two negative numbers returns the correct sum.
-    """
-    # Arrange
-    a = -8.0
-    b = -2.0
-    expected_result = -10.0
-
-    # Act
-    result = Operations.addition(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} + {b} to be {expected_result}, got {result}"
-
-
-def test_addition_positive_negative():
-    """
-    Test the addition method with one positive and one negative number.
-    
-    This test verifies that adding a positive and a negative number returns the correct sum.
-    """
-    # Arrange
-    a = 4.0
-    b = -2.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.addition(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} + ({b}) to be {expected_result}, got {result}"
-
-
-def test_addition_with_zero():
-    """
-    Test the addition method with zero as one of the operands.
-    
-    This test verifies that adding zero to a number returns the number itself.
-    """
-    # Arrange
-    a = 5.0
-    b = 0.0
-    expected_result = 5.0
-
-    # Act
-    result = Operations.addition(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} + {b} to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Subtraction Method
-# -----------------------------------------------------------------------------------
-
-def test_subtraction_positive():
-    """
-    Test the subtraction method with two positive numbers.
-    
-    This test verifies that subtracting two positive numbers returns the correct difference.
-    """
-    # Arrange
-    a = 5.0
-    b = 3.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.subtraction(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} - {b} to be {expected_result}, got {result}"
-
-
-def test_subtraction_negative_numbers():
-    """
-    Test the subtraction method with two negative numbers.
-    
-    This test verifies that subtracting two negative numbers returns the correct difference.
-    """
-    # Arrange
-    a = -10.0
-    b = -5.0
-    expected_result = -5.0
-
-    # Act
-    result = Operations.subtraction(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} - ({b}) to be {expected_result}, got {result}"
-
-
-def test_subtraction_positive_negative():
-    """
-    Test the subtraction method with one positive and one negative number.
-    
-    This test verifies that subtracting a negative number from a positive number returns the correct difference.
-    """
-    # Arrange
-    a = 13.0
-    b = -2.0
-    expected_result = 15.0
-
-    # Act
-    result = Operations.subtraction(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} - ({b}) to be {expected_result}, got {result}"
-
-
-def test_subtraction_with_zero():
-    """
-    Test the subtraction method with zero as one of the operands.
-    
-    This test verifies that subtracting zero from a number returns the number itself.
-    """
-    # Arrange
-    a = 4.0
-    b = 0.0
-    expected_result = 4.0
-
-    # Act
-    result = Operations.subtraction(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} - {b} to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Multiplication Method
-# -----------------------------------------------------------------------------------
-
-def test_multiplication_positive():
-    """
-    Test the multiplication method with two positive numbers.
-    
-    This test verifies that multiplying two positive numbers returns the correct product.
-    """
-    # Arrange
-    a = 5.0
-    b = 5.0
-    expected_result = 25.0
-
-    # Act
-    result = Operations.multiplication(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} * {b} to be {expected_result}, got {result}"
-
-
-def test_multiplication_negative_numbers():
-    """
-    Test the multiplication method with two negative numbers.
-    
-    This test verifies that multiplying two negative numbers returns the correct product.
-    """
-    # Arrange
-    a = -4.0
-    b = -5.0
-    expected_result = 20.0
-
-    # Act
-    result = Operations.multiplication(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} * {b} to be {expected_result}, got {result}"
-
-
-def test_multiplication_positive_negative():
-    """
-    Test the multiplication method with one positive and one negative number.
-    
-    This test verifies that multiplying a positive number by a negative number returns the correct product.
-    """
-    # Arrange
-    a = 10.0
-    b = -5.0
-    expected_result = -50.0
-
-    # Act
-    result = Operations.multiplication(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} * ({b}) to be {expected_result}, got {result}"
-
-
-def test_multiplication_with_zero():
-    """
-    Test the multiplication method with zero as one of the operands.
-    
-    This test verifies that multiplying any number by zero returns zero.
-    """
-    # Arrange
-    a = 2.0
-    b = 0.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.multiplication(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} * {b} to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Division Method
-# -----------------------------------------------------------------------------------
-
-def test_division_positive():
-    """
-    Test the division method with two positive numbers.
-    
-    This test verifies that dividing two positive numbers returns the correct quotient.
-    """
-    # Arrange
-    a = 4.0
-    b = 2.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.division(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
-
-
-def test_division_negative_numbers():
-    """
-    Test the division method with two negative numbers.
-    
-    This test verifies that dividing two negative numbers returns the correct quotient.
-    """
-    # Arrange
-    a = -10.0
-    b = -5.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.division(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
-
-
-def test_division_positive_negative():
-    """
-    Test the division method with one positive and one negative number.
-    
-    This test verifies that dividing a positive number by a negative number returns the correct quotient.
-    """
-    # Arrange
-    a = 15.0
-    b = -5.0
-    expected_result = -3.0
-
-    # Act
-    result = Operations.division(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} / ({b}) to be {expected_result}, got {result}"
-
-
-def test_division_with_zero_divisor():
-    """
-    Test the division method with zero as the divisor.
-    
-    This test verifies that dividing any number by zero raises a ValueError.
-    """
-    # Arrange
-    a = 10.0
-    b = 0.0
-
-    # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.division(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "Division by zero is not allowed."
-
-
-def test_division_with_zero_numerator():
-    """
-    Test the division method with zero as the numerator.
-    
-    This test verifies that dividing zero by a non-zero number returns zero.
-    """
-    # Arrange
-    a = 0.0
-    b = 5.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.division(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} / {b} to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Power Method
-# -----------------------------------------------------------------------------------
-
-def test_power_positive():
-    """
-    Test the power method with two positive numbers.
-    
-    This test verifies that raising a to b power with two positive numbers returns 
-    the correct product.
-    """
-    # Arrange
-    a = 2.0
-    b = 3.0
-    expected_result = 8.0
-
-    # Act
-    result = Operations.power(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
-
-
-def test_power_negative_numbers():
-    """
-    Test the multiplication method with two negative numbers.
-    
-    This test verifies that taking the power two negative numbers returns the correct product.
-    """
-    # Arrange
-    a = -2.0
-    b = -2.0
-    expected_result = 0.25
-
-    # Act
-    result = Operations.power(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
-
-
-def test_power_positive_negative():
-    """
-    Test the multiplication method with one positive and one negative number.
-    
-    This test verifies that multiplying a positive number by a negative number returns the correct product.
-    """
-    # Arrange
-    a = 2.0
-    b = -2.0
-    expected_result = 0.25
-
-    # Act
-    result = Operations.power(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} ** ({b}) to be {expected_result}, got {result}"
-
-def test_power_with_zeroa():
-    """
-    Test the power method with zero as operand a.
-    
-    This test verifies that raising zero to any power returns zero.
-    """
-    # Arrange
-    a = 0.0
-    b = 5.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.power(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
-
-
-def test_power_with_zerob():
-    """
-    Test the power method with zero as operand b.
-    
-    This test verifies that raising any number to zero power returns one.
-    """
-    # Arrange
-    a = 5.0
-    b = 0.0
-    expected_result = 1.0
-
-    # Act
-    result = Operations.power(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} ** {b} to be {expected_result}, got {result}"
-
-# -----------------------------------------------------------------------------------
-# Test Root Method
-# -----------------------------------------------------------------------------------
-
-def test_root_positive():
-    """
-    Test the root method with two positive numbers.
-    
-    This test verifies that dividing two positive numbers returns the correct number.
-    """
-    # Arrange
-    a = 4.0
-    b = 2.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.root(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} root {b} to be {expected_result}, got {result}"
-
-
-def test_root_negative_numbers(): 
-    """
-    Test the division method with two negative numbers.
-    
-    This test verifies that finding the negative root of a negative number returns
-    the correct exception message.
-    """
-    # Arrange
-    a = -27.0
-    b = -3.0
-
-    # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.root(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "'b'th root must be a positive number."
-
-
-def test_root_negative_positive_odd():
-    """
-    Test the root method with negative a and positive odd 'b'th root.
-    
-    This test verifies that that the positive odd root of a negative 
-    number returns the correct result.
-    """
-    # Arrange
-    a = -27.0
-    b = 3.0
-    expected_result = -3.0
-
-    # Act
-    result = Operations.root(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} root ({b}) to be {expected_result}, got {result}"
-
-
-def test_root_negative_positive_even():
-    """
-    Test the root method for an even 'b'th root of a negative a value .
-    
-    This test verifies taking an even root of negative number returns a ValueError.
-    """
-    # Arrange
-    a = -4.0
-    b = 2.0
-
-    # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.root(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "Cannot take even root of a negative number."
-
-
-def test_root_negative_with_decimal():
-    """
-    Test the root method with fractional 'b'th root.
-    
-    This test verifies that taking a fractional root of a negative number returns
-    the correct exception message.
-    """
-    # Arrange
-    a = -100.0
-    b = 5.25
-
-     # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.root(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "Cannot take fractional root of a negative number."
-
-def test_zeroth_root():
-    """
-    Test the root method with zero-th root.
-    
-    This test verifies that taking a taking the zero root of a number returns
-    the correct exception message.
-    """
-    # Arrange
-    a = 4.0
-    b = 0.0
-
-     # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.root(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "'0'th Root is undefined operation."
-
-
-# -----------------------------------------------------------------------------------
-# Test Modulus Method
-# -----------------------------------------------------------------------------------
-
-def test_modulus_positive():
-    """
-    Test the modulus method with two positive numbers.
-    
-    This test verifies that the modulus of two positive numbers returns the correct number.
-    """
-    # Arrange
-    a = 5.0
-    b = 2.0
-    expected_result = 1.0
-
-    # Act
-    result = Operations.modulus(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
-
-
-def test_modulus_negative_numbers():
-    """
-    Test the modulus method with two negative numbers.
-    
-    This test verifies that the modulus of two negative numbers returns the correct number.
-    """
-    # Arrange
-    a = -5.0
-    b = -2.0
-    expected_result = -1.0
-
-    # Act
-    result = Operations.modulus(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
-
-
-def test_modulus_positive_negative():
-    """
-    Test the modulus method with one positive and one negative number.
-    
-    This test verifies that the modulus of a positive dividend by a negative divisor returns the correct number.
-    """
-    # Arrange
-    a = 5.0
-    b = -2.0
-    expected_result = -1.0
-
-    # Act
-    result = Operations.modulus(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} % ({b}) to be {expected_result}, got {result}"
-
-def test_modulus_negative_positive():
-    """
-    Test the modulus method with one positive and one negative number.
-    
-    This test verifies that the modulus of a negative dividend by a positive divisor returns the correct number.
-    """
-    # Arrange
-    a = -5.0
-    b = 2.0
-    expected_result = 1.0
-
-    # Act
-    result = Operations.modulus(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} % ({b}) to be {expected_result}, got {result}"
-
-def test_modulus_with_zero_divisor():
-    """
-    Test the modulus method with zero as the divisor.
-    
-    This test verifies that dividing any number by zero raises a ValueError.
-    """
-    # Arrange
-    a = 5.0
-    b = 0.0
-
-    # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.modulus(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "Division by zero is not allowed."
-
-
-def test_modulus_with_zero_numerator():
-    """
-    Test the modulus method with zero as the dividend.
-    
-    This test verifies that dividing zero by a non-zero number returns zero.
-    """
-    # Arrange
-    a = 0.0
-    b = 5.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.modulus(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} % {b} to be {expected_result}, got {result}"
-
-# -----------------------------------------------------------------------------------
-# Test Integer Division Method
-# -----------------------------------------------------------------------------------
-
-def test_intdivision_positive():
-    """
-    Test the intdivision method with two positive numbers.
-    
-    This test verifies that dividing two positive numbers returns the correct quotient.
-    """
-    # Arrange
-    a = 10.0
-    b = 3.0
-    expected_result = 3.0
-
-    # Act
-    result = Operations.intdivision(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
-
-
-def test_intdivision_negative_numbers():
-    """
-    Test the intdivision method with two negative numbers.
-    
-    This test verifies that dividing two negative numbers returns the correct quotient.
-    """
-    # Arrange
-    a = -10.0
-    b = -3.0
-    expected_result = 3.0
-
-    # Act
-    result = Operations.intdivision(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
-
-
-def test_intdivision_positive_negative():
-    """
-    Test the intdivision method with one positive and one negative number.
-    
-    This test verifies that dividing a positive number by a negative number returns the correct quotient.
-    """
-    # Arrange
-    a = 10.0
-    b = -3.0
-    expected_result = -4.0
-
-    # Act
-    result = Operations.intdivision(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} // ({b}) to be {expected_result}, got {result}"
-
-
-def test_intdivision_with_zero_divisor():
-    """
-    Test the intdivision method with zero as the divisor.
-    
-    This test verifies that dividing any number by zero raises a ValueError.
-    """
-    # Arrange
-    a = 10.0
-    b = 0.0
-
-    # Act & Assert
-    with pytest.raises(ValueError) as exc_info:
-        Operations.intdivision(a, b)
-    
-    # Verify that the exception message is as expected
-    assert str(exc_info.value) == "Division by zero is not allowed."
-
-
-def test_intdivision_with_zero_numerator():
-    """
-    Test the intdivision method with zero as the numerator.
-    
-    This test verifies that dividing zero by a non-zero number returns zero.
-    """
-    # Arrange
-    a = 0.0
-    b = 5.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.intdivision(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} // {b} to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Percentage Method
-# -----------------------------------------------------------------------------------
-
-def test_percentage_positive():
-    """
-    Test the percentage method with two positive numbers.
-    
-    This test verifies that taking the percentage two positive numbers returns the correct number.
-    """
-    # Arrange
-    a = 5.0
-    b = 20.0
-    expected_result = 25.0
-
-    # Act
-    result = Operations.percentage(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
-
-
-def test_percentage_negative_numbers():
-    """
-    Test the percentage method with two negative numbers.
-    
-    This test verifies that finding the percent two negative numbers returns the correct number.
-    """
-    # Arrange
-    a = -5.0
-    b = -20.0
-    expected_result = 25.0
-
-    # Act
-    result = Operations.percentage(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
-
-
-def test_percentage_positive_negative():
-    """
-    Test the percentage method with one positive and one negative number.
-    
-    This test verifies that finding the percent of a positive number by a negative number returns the correct number.
-    """
-    # Arrange
-    a = 5.0
-    b = -20.0
-    expected_result = -25.0
-
-    # Act
-    result = Operations.percentage(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} percent ({b}) to be {expected_result}, got {result}"
-
-
-def test_percentage_with_zero_divisor():
-    """
-    Test the percentage method with zero as the divisor, any percentage of zero.
-    
-    This test verifies that finding any percent of zero with return zero.
-    """
-    # Arrange
-    a = 10.0
-    b = 0.0
-    expected_result = 0.0
-
-    # Act & Assert
-    result = Operations.percentage(a, b)
-    
-    # Verify that the exception message is as expected
-    assert result == expected_result, f"Expected {a} percent ({b}) to be {expected_result}, got {result}"
-
-
-def test_percentage_with_zero_numerator():
-    """
-    Test the percentage method with zero as the numerator.
-    
-    This test verifies that finding zero percent of a non-zero number returns zero.
-    """
-    # Arrange
-    a = 0.0
-    b = 5.0
-    expected_result = 0.0
-
-    # Act
-    result = Operations.percentage(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected {a} percent {b} to be {expected_result}, got {result}"
-
-# -----------------------------------------------------------------------------------
-# Test Absolute Differnce Method
-# -----------------------------------------------------------------------------------
-
-def test_absolute_differnce_positive():
-    """
-    Test the absolute differnce method with two positive numbers.
-    
-    This test verifies that subtracting two positive numbers returns the correct difference.
-    """
-    # Arrange
-    a = 5.0
-    b = 3.0
-    expected_result = 2.0
-
-    # Act
-    result = Operations.absolute_difference(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected |{a} - {b}| to be {expected_result}, got {result}"
-
-
-def test_absolute_difference_negative_numbers():
-    """
-    Test the absolute differnce method with two negative numbers.
-    
-    This test verifies that the absolute difference of two negative numbers returns the correct difference.
-    """
-    # Arrange
-    a = -10.0
-    b = -5.0
-    expected_result = 5.0
-
-    # Act
-    result = Operations.absolute_difference(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected |({a}) - ({b})| to be {expected_result}, got {result}"
-
-
-def test_absolute_difference_positive_negative():
-    """
-    Test the absolute difference method with one positive and one negative number.
-    
-    This test verifies that subtracting a negative number from a positive number returns the 
-    correct absolute difference.
-    """
-    # Arrange
-    a = -3.0
-    b = 12.0
-    expected_result = 15.0
-
-    # Act
-    result = Operations.absolute_difference(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected |{a} - ({b})| to be {expected_result}, got {result}"
-
-
-def test_absolute_difference_with_zero():
-    """
-    Test the absolute difference method with zero as one of the operands.
-    
-    This test verifies that subtracting zero from a number returns the number itself.
-    """
-    # Arrange
-    a = 0.0
-    b = 4.0
-    expected_result = 4.0
-
-    # Act
-    result = Operations.absolute_difference(a, b)
-
-    # Assert
-    assert result == expected_result, f"Expected |{a} - {b}| to be {expected_result}, got {result}"
-
-
-# -----------------------------------------------------------------------------------
-# Test Invalid Input Types (Negative Testing)
-# -----------------------------------------------------------------------------------
-
-@pytest.mark.parametrize("calc_method, a, b, expected_exception", [
-    (Operations.addition, '10', 5.0, TypeError),
-    (Operations.subtraction, 10.0, '5', TypeError),
-    (Operations.multiplication, '10', '5', TypeError),
-    (Operations.division, 10.0, '5', TypeError),
-])
-def test_operations_invalid_input_types(calc_method, a, b, expected_exception):
-    """
-    Test that arithmetic methods raise TypeError when provided with invalid input types.
-    
-    This test verifies that providing non-float inputs to the arithmetic methods raises
-    a TypeError, as the operations are intended for floating-point numbers.
-    """
-    # Arrange
-    # No setup needed as the invalid inputs are provided directly
-
-    # Act & Assert
-    with pytest.raises(expected_exception):
-        calc_method(a, b)
-
+from decimal import Decimal
+from typing import Any, Dict, Type
+
+from app.exception import ValidationError
+from app.operations import (
+    Operation,
+    Addition,
+    Subtraction,
+    Multiplication,
+    Division,
+    Power,
+    Root,
+    Modulus,
+    Int_Division,
+    AbsoluteDifference,
+    Percent,
+    OperationFactory,
+)
+
+
+class TestOperation:
+    """Test base Operation class functionality."""
+
+    def test_str_representation(self):
+        """Test that string representation returns class name."""
+        class TestOp(Operation):
+            def execute(self, a: Decimal, b: Decimal) -> Decimal:
+                return a
+
+        assert str(TestOp()) == "TestOp"
+
+
+class BaseOperationTest:
+    """Base test class for all operations."""
+
+    operation_class: Type[Operation]
+    valid_test_cases: Dict[str, Dict[str, Any]]
+    invalid_test_cases: Dict[str, Dict[str, Any]]
+
+    def test_valid_operations(self):
+        """Test operation with valid inputs."""
+        operation = self.operation_class()
+        for name, case in self.valid_test_cases.items():
+            a = Decimal(str(case["a"]))
+            b = Decimal(str(case["b"]))
+            expected = Decimal(str(case["expected"]))
+            result = operation.execute(a, b)
+            assert result == expected, f"Failed case: {name}"
+
+    def test_invalid_operations(self):
+        """Test operation with invalid inputs raises appropriate errors."""
+        operation = self.operation_class()
+        for name, case in self.invalid_test_cases.items():
+            a = Decimal(str(case["a"]))
+            b = Decimal(str(case["b"]))
+            error = case.get("error", ValidationError)
+            error_message = case.get("message", "")
+
+            with pytest.raises(error, match=error_message):
+                operation.execute(a, b)
+
+
+class TestAddition(BaseOperationTest):
+    """Test Addition operation."""
+
+    operation_class = Addition
+    valid_test_cases = {
+        "positive_numbers": {"a": "5", "b": "3", "expected": "8"},
+        "negative_numbers": {"a": "-5", "b": "-3", "expected": "-8"},
+        "mixed_signs": {"a": "-5", "b": "3", "expected": "-2"},
+        "zero_sum": {"a": "5", "b": "-5", "expected": "0"},
+        "decimals": {"a": "5.5", "b": "3.3", "expected": "8.8"},
+        "large_numbers": {
+            "a": "1e10",
+            "b": "1e10",
+            "expected": "20000000000"
+        },
+    }
+    invalid_test_cases = {}  # Addition has no invalid cases
+
+
+class TestSubtraction(BaseOperationTest):
+    """Test Subtraction operation."""
+
+    operation_class = Subtraction
+    valid_test_cases = {
+        "positive_numbers": {"a": "5", "b": "3", "expected": "2"},
+        "negative_numbers": {"a": "-5", "b": "-3", "expected": "-2"},
+        "mixed_signs": {"a": "-5", "b": "3", "expected": "-8"},
+        "zero_result": {"a": "5", "b": "5", "expected": "0"},
+        "decimals": {"a": "5.5", "b": "3.3", "expected": "2.2"},
+        "large_numbers": {
+            "a": "1e10",
+            "b": "1e9",
+            "expected": "9000000000"
+        },
+    }
+    invalid_test_cases = {}  # Subtraction has no invalid cases
+
+
+class TestMultiplication(BaseOperationTest):
+    """Test Multiplication operation."""
+
+    operation_class = Multiplication
+    valid_test_cases = {
+        "positive_numbers": {"a": "5", "b": "3", "expected": "15"},
+        "negative_numbers": {"a": "-5", "b": "-3", "expected": "15"},
+        "mixed_signs": {"a": "-5", "b": "3", "expected": "-15"},
+        "multiply_by_zero": {"a": "5", "b": "0", "expected": "0"},
+        "decimals": {"a": "5.5", "b": "3.3", "expected": "18.15"},
+        "large_numbers": {
+            "a": "1e5",
+            "b": "1e5",
+            "expected": "10000000000"
+        },
+    }
+    invalid_test_cases = {}  # Multiplication has no invalid cases
+
+
+class TestDivision(BaseOperationTest):
+    """Test Division operation."""
+
+    operation_class = Division
+    valid_test_cases = {
+        "positive_numbers": {"a": "6", "b": "2", "expected": "3"},
+        "negative_numbers": {"a": "-6", "b": "-2", "expected": "3"},
+        "mixed_signs": {"a": "-6", "b": "2", "expected": "-3"},
+        "decimals": {"a": "5.5", "b": "2", "expected": "2.75"},
+        "divide_zero": {"a": "0", "b": "5", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "5",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero is not allowed"
+        },
+    }
+
+
+class TestPower(BaseOperationTest):
+    """Test Power operation."""
+
+    operation_class = Power
+    valid_test_cases = {
+        "positive_base_and_exponent": {"a": "2", "b": "3", "expected": "8"},
+        "zero_exponent": {"a": "5", "b": "0", "expected": "1"},
+        "one_exponent": {"a": "5", "b": "1", "expected": "5"},
+        "decimal_base": {"a": "2.5", "b": "2", "expected": "6.25"},
+        "zero_base": {"a": "0", "b": "5", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "negative_exponent": {
+            "a": "2",
+            "b": "-3",
+            "error": ValidationError,
+            "message": "Negative exponents not supported"
+        },
+    }
+
+
+class TestRoot(BaseOperationTest):
+    """Test Root operation."""
+
+    operation_class = Root
+    valid_test_cases = {
+        "square_root": {"a": "9", "b": "2", "expected": "3"},
+        "cube_root": {"a": "27", "b": "3", "expected": "3"},
+        "fourth_root": {"a": "16", "b": "4", "expected": "2"},
+        "decimal_root": {"a": "2.25", "b": "2", "expected": "1.5"},
+    }
+    invalid_test_cases = {
+        "negative_base": {
+            "a": "-9",
+            "b": "2",
+            "error": ValidationError,
+            "message": "Cannot calculate root of negative number"
+        },
+        "zero_root": {
+            "a": "9",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Zero root is undefined"
+        },
+    }
+
+class TestModulus(BaseOperationTest):
+    """Test Modulus operation."""
+
+    operation_class = Modulus
+    valid_test_cases = {
+        "positive_numbers": {"a": "6", "b": "2", "expected": "0"},
+        "negative_numbers": {"a": "-6", "b": "-4", "expected": "-2"},
+        "mixed_signs": {"a": "-6", "b": "2", "expected": "0"},
+        "decimals": {"a": "5.5", "b": "2", "expected": "1.5"},
+        "divide_zero": {"a": "0", "b": "5", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "5",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero is not allowed"
+        },
+    }
+
+class TestIntDivison(BaseOperationTest):
+    """Test Integer Division operation."""
+
+    operation_class = Int_Division
+    valid_test_cases = {
+        "positive_numbers": {"a": "10", "b": "3", "expected": "3"},
+        "negative_numbers": {"a": "-6", "b": "-4", "expected": "1"},
+        "mixed_signs": {"a": "-10", "b": "4", "expected": "-2"},
+        "decimals": {"a": "5.25", "b": "3", "expected": "1"},
+        "divide_zero": {"a": "0", "b": "2", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "10",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero is not allowed"
+        },
+    }
+
+class TestAbsoluteDifference(BaseOperationTest):
+    """Test Absolute Difference operation."""
+
+    operation_class = AbsoluteDifference
+    valid_test_cases = {
+        "positive_numbers": {"a": "5", "b": "3", "expected": "2"},
+        "negative_numbers": {"a": "-10", "b": "-3", "expected": "7"},
+        "mixed_signs": {"a": "-5", "b": "3", "expected": "8"},
+        "zero_result": {"a": "5", "b": "5", "expected": "0"},
+        "decimals": {"a": "5.5", "b": "3.3", "expected": "2.2"},
+        "large_numbers": {
+            "a": "1e10",
+            "b": "1e9",
+            "expected": "9000000000"
+        },
+    }
+    invalid_test_cases = {}  # Absolute Difference has no invalid cases
+
+class TestPercent(BaseOperationTest):
+    """Test Percent operation."""
+
+    operation_class = Percent
+    valid_test_cases = {
+        "positive_numbers": {"a": "10", "b": "100", "expected": "10"},
+        "negative_numbers": {"a": "-6", "b": "-12", "expected": "50"},
+        "mixed_signs": {"a": "-10", "b": "40", "expected": "-25"},
+        "decimals": {"a": "5.25", "b": "10", "expected": "52.5"},
+        "divide_zero": {"a": "0", "b": "5", "expected": "0"},
+    }
+    invalid_test_cases = {
+        "divide_by_zero": {
+            "a": "10",
+            "b": "0",
+            "error": ValidationError,
+            "message": "Division by zero is not allowed"
+        },
+    }
+
+class TestOperationFactory:
+    """Test OperationFactory functionality."""
+
+    def test_create_valid_operations(self):
+        """Test creation of all valid operations."""
+        operation_map = {
+            'add': Addition,
+            'subtract': Subtraction,
+            'multiply': Multiplication,
+            'divide': Division,
+            'power': Power,
+            'root': Root,
+        }
+
+        for op_name, op_class in operation_map.items():
+            operation = OperationFactory.create_operation(op_name)
+            assert isinstance(operation, op_class)
+            # Test case-insensitive
+            operation = OperationFactory.create_operation(op_name.upper())
+            assert isinstance(operation, op_class)
+
+    def test_create_invalid_operation(self):
+        """Test creation of invalid operation raises error."""
+        with pytest.raises(ValueError, match="Unknown operation: invalid_op"):
+            OperationFactory.create_operation("invalid_op")
+
+    def test_register_valid_operation(self):
+        """Test registering a new valid operation."""
+        class NewOperation(Operation):
+            def execute(self, a: Decimal, b: Decimal) -> Decimal:
+                return a
+
+        OperationFactory.register_operation("new_op", NewOperation)
+        operation = OperationFactory.create_operation("new_op")
+        assert isinstance(operation, NewOperation)
+
+    def test_register_invalid_operation(self):
+        """Test registering an invalid operation class raises error."""
+        class InvalidOperation:
+            pass
+
+        with pytest.raises(TypeError, match="Operation class must inherit"):
+            OperationFactory.register_operation("invalid", InvalidOperation)
