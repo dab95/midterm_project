@@ -19,6 +19,7 @@ from io import StringIO
 from app.calculator import Calculator
 from app.operations import OperationFactory
 from app.calculator_repl import calculator_repl
+from app.exception import OperationError, ValidationError
 
 
 
@@ -50,6 +51,82 @@ def test_calculator_repl():
     assert "Result: 19" in output
     assert "Goodbye!" in output
 
+#test for repl operation exception input
+def test_validation_exception():
+
+    inputs = [
+        "add",
+        "9",
+        "b",
+        "exit"]
+
+    #mock classes for operations  
+    with patch("app.calculator_repl.Calculator") as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output, \
+         patch("app.calculator_repl.LoggingObserver"), \
+         patch("app.calculator_repl.AutoSaveObserver"):
+        
+        m_calc = MockCalc.return_value
+        #exception for for perform operation
+        m_calc.perform_operation.side_effect = ValidationError("Error")
+
+        calculator_repl()
+        output = fake_output.getvalue()
+
+    #test assertions for inputs
+    assert "Error:" in output
+    assert "Goodbye!" in output
+
+#test for repl operation exception input
+def test_operation_exception():
+
+    inputs = [
+        "add",
+        "9",
+        "10",
+        "exit"]
+
+    #mock classes for operations  
+    with patch("app.calculator_repl.Calculator") as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output, \
+         patch("app.calculator_repl.LoggingObserver"), \
+         patch("app.calculator_repl.AutoSaveObserver"):
+        
+        m_calc = MockCalc.return_value
+        #exception for for perform operation
+        m_calc.perform_operation.side_effect = Exception("Error")
+
+        calculator_repl()
+        output = fake_output.getvalue()
+
+    #test assertions for inputs
+    assert "Unexpected error: Error" in output
+    assert "Goodbye!" in output
+
+#test for unknown command input
+def test_unknown_command():
+    inputs = [
+        "test", 
+        "exit"]
+
+    #mock classes for operations
+    with patch("app.calculator_repl.Calculator") as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output:
+
+
+        calculator_repl()
+        output = fake_output.getvalue()
+
+    #test assertions for inputs
+    assert "Calculator started" in output
+    assert "Unknown command" in output
+    assert "Goodbye!" in output
 
 #test for history operation
 def test_history_repl():
@@ -277,6 +354,32 @@ def test_load():
     assert "Goodbye!" in output
 
 
+#test for repl load exception input
+def test_load_exception():
+
+    inputs = [
+        "load",
+        "exit"]
+
+    #mock classes for operations  
+    with patch("app.calculator_repl.Calculator") as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output, \
+         patch("app.calculator_repl.LoggingObserver"), \
+         patch("app.calculator_repl.AutoSaveObserver"):
+        
+        m_calc = MockCalc.return_value
+        #exception for load history
+        m_calc.load_history.side_effect = Exception("Load Error")
+
+        calculator_repl()
+        output = fake_output.getvalue()
+
+    #test assertions for inputs
+    assert "Error loading history: Load Error" in output
+    assert "Goodbye!" in output
+
 #test for cancel operation
 def test_cancel():
     #test inputs for cancel with 0 and 1 digit
@@ -333,7 +436,29 @@ def test_kb_exception():
     assert "Input terminated. Exiting..." in output
 
 
-    
+def test_repl_exception():
+    #test inputs and exceptions
+    inputs = [
+        Exception("Unexpected Error"),
+        "exit"]
+
+    #mock classes for operations   
+    with patch("app.calculator_repl.Calculator") as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output, \
+         patch("app.calculator_repl.LoggingObserver"), \
+         patch("app.calculator_repl.AutoSaveObserver"):
+        
+
+        calculator_repl()
+        output = fake_output.getvalue()
+
+    #test assertions for exceptions
+    assert "Error: Unexpected Error" in output
+
+
+
 
     #test for exit input exception
 def test_exit_kb_exception():
@@ -360,3 +485,26 @@ def test_exit_kb_exception():
     #test assertions for exceptions
     assert "Goodbye!" in output
     assert "Warning: Could not save history: Save Error" in output
+
+#test for exception interrupting calc repl
+def test_calc_exception():
+    exception= Exception("Error")
+    inputs= []
+    
+
+    #mock classes for operations   
+    with patch("app.calculator_repl.Calculator", side_effect= exception) as MockCalc, \
+         patch("app.calculator_repl.OperationFactory") as MockFactory, \
+         patch("builtins.input", side_effect= inputs), \
+         patch("sys.stdout", new_callable=StringIO) as fake_output, \
+         patch("app.calculator_repl.LoggingObserver"), \
+         patch("app.calculator_repl.AutoSaveObserver"):
+        
+
+        with pytest.raises(Exception, match="Error"):
+            calculator_repl()
+
+        output = fake_output.getvalue()
+
+    #test assertions for exceptions
+    assert "Fatal error: Error" in output
